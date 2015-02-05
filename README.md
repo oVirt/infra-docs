@@ -17,3 +17,6 @@ Until the final procedures are figured out, you can generate the wiki
 markup from these files using [pandoc][p_src].
 
   [p_src]: http://johnmacfarlane.net/pandoc
+
+For example:
+  > pandoc -f markdown -t mediawiki README.md
