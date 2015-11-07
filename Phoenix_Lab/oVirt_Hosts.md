@@ -1,3 +1,6 @@
+oVirt Hosts
+=============
+
 All the hosts have a server installation of Fedora 19, with a hardware
 RAID5 setup and bonding on all interfaces.
 
@@ -200,7 +203,9 @@ dig/nslookup worked perfectly, that was caused by having wrong custom routing
 rules in a routing table aside from the main one, to see all the routing rules
 you can type:
 
-  > ip route show table all
+```
+ip route show table all
+```
 
 Those were defined in the /etc/network-scripts/rules-ovirtmgmt file.
 
@@ -210,17 +215,19 @@ In one of the hosts, after messing the network, vdsm did not automatically
 create the ovirtmgmt network in the libvirt setting, you can create it manually
 by:
 
-  > echo <<EOC > ovirtmgmt_net.xml
-  <network>
-    <name>vdsm-ovirtmgmt</name>
-    <forward mode='bridge'/>
-    <bridge name='ovirtmgmt'/>
-  </network>
-  > virsh -c qemu:///system
-  user: vdsm@ovirt
-  pass: shibboleth
-  (virsh)# net-create ovirtmgmt_net.xml
-  # this creates the network in non-persistent mode, to force persistent we can 
-  # just edit it and add a newline at the end
-  (virsh)# net-edit ovirtmgmt
-  (virsh)# net-autostart ovirtmgmt
+```
+$ echo <<EOC > ovirtmgmt_net.xml
+<network>
+  <name>vdsm-ovirtmgmt</name>
+  <forward mode='bridge'/>
+  <bridge name='ovirtmgmt'/>
+</network>
+$ virsh -c qemu:///system
+user: vdsm@ovirt
+pass: shibboleth
+(virsh)$ net-create ovirtmgmt_net.xml
+# this creates the network in non-persistent mode, to force persistent we can 
+# just edit it and add a newline at the end
+(virsh)$ net-edit ovirtmgmt
+(virsh)$ net-autostart ovirtmgmt
+```

@@ -1,5 +1,8 @@
+Overview
+==============
+
 The Poenix Lab infrastructure is composed by (as of today) 10 nodes
-separated in two roles. The [storage servers] (2 hosts) and the
+separated in two roles. The [storage servers] \(2 hosts) and the
  [oVirt host] servers (8 hosts).
 
   [storage servers]: /infra/Phoenix_Lab_Storage_Hosts

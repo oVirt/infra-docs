@@ -1,3 +1,5 @@
+Configuring the ssh tunnel for spice
+====================
 Heres a *hacky* way to setup the tunnel for spice to be used when
 clicking the engine spice button on fedora based machines.
 

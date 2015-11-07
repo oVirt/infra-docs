@@ -1,3 +1,5 @@
+Storage hosts
+================
 Currently we have two storage servers, both of them have a CentOS 6.5
 installation on them.
 
