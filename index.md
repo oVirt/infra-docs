@@ -1,8 +1,9 @@
 Welcome to oVirt Infra docs's documentation!
 ============================================
 
-
-* [Infra bash style guide](Infra_Bash_style_guide.html)
+## General
+* [Communication](General/Communication.html)
+* [Infra Bash style guide](General/Infra_Bash_style_guide.html)
 
 ## Phoenix lab
 * [Overview](Phoenix_Lab/Overview.html)
