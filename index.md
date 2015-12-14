@@ -7,6 +7,7 @@ Welcome to oVirt Infra docs's documentation!
 * [How to add a mirror](General/Mirror.html)
 * [Service Upgrade Checklist](General/Service_Upgrade_Checklist.html)
 * [Puppet dev tips](General/Puppet.html)
+* [Creating Gerrit projects](General/Creating_Gerrit_Projects.html)
 * [Merging Gerrit accounts](General/Gerrit_account_merge.html)
 
 ## Phoenix lab
