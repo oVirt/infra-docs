@@ -4,6 +4,7 @@ Welcome to oVirt Infra docs's documentation!
 ## General
 * [Communication](General/Communication.html)
 * [Infra Bash style guide](General/Infra_Bash_style_guide.html)
+* [How to add a mirror](General/Mirror.html)
 
 ## Phoenix lab
 * [Overview](Phoenix_Lab/Overview.html)
