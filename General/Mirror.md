@@ -11,7 +11,7 @@ How to add a new oVirt mirror
         Thanks,
         YOUR NAME
 
-* Once he replies, Email [servicedesk@redhat.com][service_desk]:
+* Once he replies, Email servicedesk_redhat_dot_com:
 
         Hi,
         Please allow access from <mirror ip> to resources.ovirt.org(66.187.230.28) port 22(SSH)
@@ -30,12 +30,10 @@ After a few days that everything is running well do the following:
 * Create a new patch which updates the mirrorlist file, see
 [this][mirror_list_patch] for reference.
 * Update [http://www.ovirt.org/Repository_mirrors][wiki_repo] with the links/email/organization.
-* Email [mariel@redhat.com][community_email] in order to update [http://www.ovirt.org/Download][ovirt_download]
+* Email oVirt community lead in order to update [http://www.ovirt.org/Download][ovirt_download]
 
     [ssh_key_patch]: https://gerrit.ovirt.org/#/c/51101/
     [mirror_list_patch]: https://gerrit.ovirt.org/#/c/52384/
     [infra_puppet]: https://gerrit.ovirt.org/#/admin/projects/infra-puppet
     [wiki_repo]: http://www.ovirt.org/index.php?title=Repository_mirrors&action=edit&section=4s
     [ovirt_download]: http://www.ovirt.org/Download
-    [community_email]: mariel@redhat.com
-    [service_desk]: servicedesk@redhat.com
