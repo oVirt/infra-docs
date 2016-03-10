@@ -5,6 +5,7 @@ Welcome to oVirt Infra docs's documentation!
 * [Communication](General/Communication.html)
 * [Infra Bash style guide](General/Infra_Bash_style_guide.html)
 * [How to add a mirror](General/Mirror.html)
+* [Service Upgrade Checklist](General/Service_Upgrade_Checklist.html)
 
 ## Phoenix lab
 * [Overview](Phoenix_Lab/Overview.html)
