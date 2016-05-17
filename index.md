@@ -19,6 +19,7 @@ Welcome to oVirt Infra docs's documentation!
 * [Build and test standards](CI/Build_and_test_standards.html)
 * [Proxy](CI/Proxy.html)
 * [System Groovy Jenkins Scripts](CI/System_groovy_jenkins_scripts.html)
+* [Gerrit custom hooks](CI/Gerrit_Hooks.html)
 
 
 
