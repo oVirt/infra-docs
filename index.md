@@ -9,6 +9,7 @@ Welcome to oVirt Infra docs's documentation!
 * [Puppet dev tips](General/Puppet.html)
 * [Creating Gerrit projects](General/Creating_Gerrit_Projects.html)
 * [Merging Gerrit accounts](General/Gerrit_account_merge.html)
+* [Encrypting/decrypting with you own PGP key](General/PGP_howto.html)
 
 ## Phoenix lab
 * [Overview](Phoenix_Lab/Overview.html)
