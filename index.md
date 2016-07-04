@@ -16,6 +16,7 @@ Welcome to oVirt Infra docs's documentation!
 * [oVirt hosts](Phoenix_Lab/oVirt_Hosts.html)
 * [Configureing the ssh tunnel to get spice](Phoenix_Lab/Ssh_Spice_Tunnel.html)
 * [Storage hosts](Phoenix_Lab/Storage_Hosts.html)
+* [Jenkins VM](Phoenix_Lab/Jenkins.html)
 
 ## CI
 * [Build and test standards](CI/Build_and_test_standards.html)
