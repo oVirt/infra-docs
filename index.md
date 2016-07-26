@@ -23,6 +23,7 @@ Welcome to oVirt Infra docs's documentation!
 * [Proxy](CI/Proxy.html)
 * [System Groovy Jenkins Scripts](CI/System_groovy_jenkins_scripts.html)
 * [Gerrit custom hooks](CI/Gerrit_Hooks.html)
+* [Adding a yamlized jobs to Jenkins with JJB](CI/Adding_yamlized_jobs_with_JJB.html)
 
 
 

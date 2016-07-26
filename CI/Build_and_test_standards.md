@@ -215,5 +215,101 @@ el7, just:
 If none passed, will run on all of the defaults.
 
 
+Adding a project to standard-ci in Jenkins
+------------------------------------------
+A project can be configured to run standard tests in [jenkins][oVirt_Jenkins].
+The configurations are done by creating two files in the
+[jenkins repo][jenkins_git_repo]:
+1. A project yaml file, named '{project name}_standard.yaml'
+2. An scm yaml file for the project git repo, named {project}.yaml.
+
+The yaml files will be read by jenkins-job-builder and the configurations will
+be deployed to jenkins once the patch is merged.
+[Here][Adding a yamlized jobs to Jenkins with JJB] you can find more info
+about testing/updating yaml configurations before the patch is merged.
+
+### creating a project yaml file:
+First, a project directory should be created in [jenkins repo][jenkins_git_repo]
+under jobs/confs/projects. Within this directory, a project yaml file named
+'{project name}_standard.yaml' should be created and the following needs to be
+specified:
+
+* **project** - the name of the project(s) to create the jobs for
+* **version and branch name** - the project version(s) and the name of the git
+branch for the specified version
+* **stage** - the standard stage(s) to create the jobs for (check-patch,
+  check-merged or build-artifacts)
+* **distro** - the distribution that should be tested (e.g. el7, fc24)
+* **trigger** - how should the jobs be triggered. Can be either:
+  * *timed* - in this case, 'trigger-times' key should also be specified, with
+    the schedule value
+  * *on-change* - in this case the appropriate '{stage}_trigger_on-change'
+    trigger will be used. These triggers are already configured in
+    [jenkins repo][jenkins_git_repo],
+    under jobs/confs/yaml/triggers/standard.yaml
+* **arch** - the architecture that should be tested
+
+The jobs that will be created will be given a name in the form of: <br>
+'{project}\_{version}\_{stage}-{distro}-{arch}'. <br>The specific jobs names that
+will be created is a cartesian product of the different values of the above
+confs. Specific combinations can be excluded by specifing them in yaml.
+
+An example for a project yaml file:
+
+    - project:
+        name: ovirt-dwh_standard
+        project:
+          - ovirt-dwh
+        version:
+          - master:
+              branch: master
+          - 4.0:
+              branch: ovirt-engine-dwh-4.0
+          - 3.6:
+              branch: ovirt-engine-dwh-3.6
+        stage:
+          - check-patch
+          - check-merged
+        distro:
+          - el6
+          - el7
+          - fc23
+          - fc24
+        exclude:
+          - version: master
+            distro: el6
+          - version: master
+            distro: fc23
+          - version: 4.0
+            distro: el6
+          - version: 4.0
+            distro: fc24
+          - version: 3.6
+            distro: fc24
+          - version: 3.6
+            distro: fc23
+        trigger: 'on-change'
+        arch: x86_64
+        jobs:
+          - '{project}_{version}_{stage}-{distro}-{arch}'
+
+### creating an scm file for the project:
+A {project}.yaml file should be added under the jobs/confs/yaml/scms directory.
+The scm name should be in the format of {project}-gerrit.
+
+An example for a project yaml file:
+
+    - scm:
+        name: ovirt-dwh-gerrit
+        scm:
+          - gerrit:
+              project: ovirt-dwh
+              git-server: '{git-server}'
+
+More examples can be found in the [jenkins repo][jenkins_git_repo] under
+the jobs/confs directory.
+
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
 [mock_install_page]: https://fedoraproject.org/wiki/Projects/Mock
+[oVirt_Jenkins]: http://jenkins.ovirt.org
+[Adding a yamlized jobs to Jenkins with JJB]: ./Adding_yamlized_jobs_with_JJB.html
