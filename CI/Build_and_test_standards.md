@@ -32,12 +32,21 @@ Scripts
 To build a project, you have to create a shell script (will be run with bash)
 named *build-artifacts* inside the automation directory.
 
-This should generate any artifacts to be archives (isos, rpms, debs, tarballs,
+This should generate any artifacts to be archived (isos, rpms, debs, tarballs,
 ...) and **leave them at exported-artifacts/** directory, at the same level as
 the automation directory, in the root. The build system will collect anything
 left there.
 It must make sure that the exported-artifacts is empty if needed, or created
 if non-existing.
+
+
+### build-artifacts-manual.sh
+
+This script is meant for building artifacts from an existing tarball file,
+assuming the file is already found inside the project's top directory. As in
+'build-artifacts.sh', this script should also leave the files at the
+**exported-artifacts/** directory, under the automation directory, and make
+sure it's empty, or created if non-existing before using it.
 
 
 ### check-patch.sh
@@ -49,7 +58,7 @@ Usually you would run static code checks and unit tests.
 
 ### check-merged.sh
 
-This script is ment to be run as a gate when merging changes to the main
+This script is meant to be run as a gate when merging changes to the main
 branch, it should run all the tests that you find required for any change to
 get merged, that might include all the tests you run for *check-patch.sh*, but
 also some functional tests or other tests that require mote time/resources. It
@@ -220,15 +229,15 @@ Adding a project to standard-ci in Jenkins
 A project can be configured to run standard tests in [jenkins][oVirt_Jenkins].
 The configurations are done by creating two files in the
 [jenkins repo][jenkins_git_repo]:
-1. A project yaml file, named '{project name}_standard.yaml'
-2. An scm yaml file for the project git repo, named {project}.yaml.
+1.  A project yaml file, named '{project name}_standard.yaml'
+2.  An scm yaml file for the project git repo, named {project}.yaml.
 
 The yaml files will be read by jenkins-job-builder and the configurations will
 be deployed to jenkins once the patch is merged.
 [Here][Adding a yamlized jobs to Jenkins with JJB] you can find more info
 about testing/updating yaml configurations before the patch is merged.
 
-### creating a project yaml file:
+### Creating a project yaml file:
 First, a project directory should be created in [jenkins repo][jenkins_git_repo]
 under jobs/confs/projects. Within this directory, a project yaml file named
 '{project name}_standard.yaml' should be created and the following needs to be
@@ -237,8 +246,11 @@ specified:
 * **project** - the name of the project(s) to create the jobs for
 * **version and branch name** - the project version(s) and the name of the git
 branch for the specified version
-* **stage** - the standard stage(s) to create the jobs for (check-patch,
-  check-merged or build-artifacts)
+* **stage** - the standard stage(s) to create the jobs for. Can be either:
+  * *check-patch*
+  * *check-merged*
+  * *build-artifacts*
+  * *build-artifacts-manual* - see below a note for this stage
 * **distro** - the distribution that should be tested (e.g. el7, fc24)
 * **trigger** - how should the jobs be triggered. Can be either:
   * *timed* - in this case, 'trigger-times' key should also be specified, with
@@ -247,6 +259,8 @@ branch for the specified version
     trigger will be used. These triggers are already configured in
     [jenkins repo][jenkins_git_repo],
     under jobs/confs/yaml/triggers/standard.yaml
+  * *manual* - for build-artifacts-manual stage, the trigger should be set to
+    manual
 * **arch** - the architecture that should be tested
 
 The jobs that will be created will be given a name in the form of: <br>
@@ -293,7 +307,31 @@ An example for a project yaml file:
         jobs:
           - '{project}_{version}_{stage}-{distro}-{arch}'
 
-### creating an scm file for the project:
+#### A note for adding build-artifacts-manual jobs:
+When creating build-artifacts-manual jobs for a project, another job should be
+created, named '{project}_any_build-artifacts-manual'. In this job the user
+will upload a local tarball, and select the verion of the product. The job will
+then call the relevant distro-specific build-artifacts-manual jobs for the
+specified version, and pass the tarball to them. The triggered jobs will then
+run the build-artifacts-manual.sh script inside a mock environment.
+
+In order to create this job, another project configuration should be added to
+the project yaml file, specifying the project name and the list of supported
+versions.
+
+An example for adding the '{project}_any_build-artifacts-manual' to yaml:
+
+    - project:
+        project: ovirt-dwh
+        name: ovirt-dwh_build-artifacts-manual-any
+        version:
+          - '3.6'
+          - '4.0'
+          - 'master'
+        jobs:
+          - '{project}_any_build-artifacts-manual'
+
+### Creating an scm file for the project:
 A {project}.yaml file should be added under the jobs/confs/yaml/scms directory.
 The scm name should be in the format of {project}-gerrit.
 
@@ -308,6 +346,7 @@ An example for a project yaml file:
 
 More examples can be found in the [jenkins repo][jenkins_git_repo] under
 the jobs/confs directory.
+
 
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
 [mock_install_page]: https://fedoraproject.org/wiki/Projects/Mock
