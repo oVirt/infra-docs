@@ -249,8 +249,8 @@ branch for the specified version
 * **stage** - the standard stage(s) to create the jobs for. Can be either:
   * *check-patch*
   * *check-merged*
-  * *build-artifacts*
-  * *build-artifacts-manual* - see below a note for this stage
+  * *build-artifacts* - see below an important note for this stage
+  * *build-artifacts-manual* - see below an important note for this stage
 * **distro** - the distribution that should be tested (e.g. el7, fc24)
 * **trigger** - how should the jobs be triggered. Can be either:
   * *timed* - in this case, 'trigger-times' key should also be specified, with
@@ -270,7 +270,7 @@ confs. Specific combinations can be excluded by specifing them in yaml.
 
 An example for a project yaml file:
 
-    - project:
+    - project: &base-params  # this syntax is used for inheritance
         name: ovirt-dwh_standard
         project:
           - ovirt-dwh
@@ -307,22 +307,55 @@ An example for a project yaml file:
         jobs:
           - '{project}_{version}_{stage}-{distro}-{arch}'
 
+    - project:
+        <<: *base-params  # this syntax indicates inheritance
+        name: ovirt-dwh_build-artifacts
+        stage: build-artifacts  # the stage parameter is overwritten
+        jobs:
+          - '{project}_{version}_build-artifacts-{distro}-{arch}'
+
+    - project:
+        <<: *base-params  # this syntax indicates inheritance
+        name: ovirt-dwh_build-artifacts-manual
+        stage: build-artifacts-manual  # the stage parameter is overwritten
+        trigger: manual  # the trigger parameter is overwritten
+        jobs:
+          - '{project}_{version}_build-artifacts-manual-{distro}-{arch}'
+
+
+#### A note for adding build-artifacts jobs:
+When creating build-artifacts jobs, the 'jobs' parameter value under the
+project's definition should be in the form of: <br>
+'{project}_{version}_build-artifacts-{distro}-{arch}' <br>
+This is because the way that the yaml template of the build-artifacts jobs is
+configured. As a result, there should be a separate project definition block
+for the check-patch/check-merged and the build-artifacts jobs.
+See example above.
+
 #### A note for adding build-artifacts-manual jobs:
-When creating build-artifacts-manual jobs for a project, another job should be
+When creating build-artifacts-manual jobs, the 'trigger' parameter should be
+set to 'manual', and the 'jobs' parameter value should be in the form of: <br>
+'{project}_{version}_build-artifacts-manual-{distro}-{arch}' <br>
+As a result there should be a separate project definition for the
+build-artifacts-manual jobs. See example above.
+
+
+Additionally, for build-artifacts-manual, another job should be
 created, named '{project}_any_build-artifacts-manual'. In this job the user
-will upload a local tarball, and select the verion of the product. The job will
-then call the relevant distro-specific build-artifacts-manual jobs for the
-specified version, and pass the tarball to them. The triggered jobs will then
-run the build-artifacts-manual.sh script inside a mock environment.
+will upload a local tarball, and select the version of the product from a
+drop-down menu. The job will then call the relevant distro-specific
+build-artifacts-manual jobs for the specified version, and pass the tarball to
+them. The triggered jobs will then run the build-artifacts-manual.sh script
+inside a mock environment.
 
 In order to create this job, another project configuration should be added to
 the project yaml file, specifying the project name and the list of supported
-versions.
+versions (this list will be shown to the user as a drop down menu).
 
 An example for adding the '{project}_any_build-artifacts-manual' to yaml:
 
     - project:
-        project: ovirt-dwh
+        project: ovirt-dwh  # you may also use inheritance for the project name
         name: ovirt-dwh_build-artifacts-manual-any
         version:
           - '3.6'
