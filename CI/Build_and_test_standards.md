@@ -26,44 +26,43 @@ hosts.
 
 Standard CI 'Stages'
 ---------------------------------------
-The standard CI framework support different 'stages' in a patch lifecycle.
+The standard CI framework supports different 'stages' in a patch lifecycle.
 Each stage has its own triggers, builders and other features which will
 be described in the 'scripts' section below.
 
-Each stage has its own trigger which is defined in the triggers
-templates file under the Jenkins repo and is called {stage}_trigger_{trigger},
-where {trigger} is a parameter passed from the project YAML file,
-e.g: 'check-patch_trigger_on_change'.
-
-Listed below are the current supported stages and thier triggers:
+Listed below are the current supported stages:
 
  * 'build-artifacts':
-    Runs after merge and build the project artifacts,
-    Artifacts will be deployed to the experimental repository.
-    Uses the 'build-artifacts.*' file.
-    Uses the 'on-change' trigger type.
+
+    Trigger: After a commit (patch) is merged.<br>
+    Action: build project artifacts and deploy to yum repos.<br>
+    Uses the 'build-artifacts.*' files.
 
  * 'build-artifacts-on-demand':
-    Same as above, only it runs before merge,
-    whenever the comment: 'ci please build' is added to the patch.
-    Artifacts from this job WON'T be deployed to a repository.
-    Uses the 'build-artifacts.*' file.
-    Uses the 'on-comment-added' trigger type.
+
+    This isn't a real stage, but it has its own trigger and jobs.<br>
+    Trigger: comment 'ci please build' is added to a patch.<br>
+    Action: build project artifacts on demand from an open patch.<br>
+    Uses the 'build-artifacts.*' files.
 
  * 'build-artifacts-manual':
-    Unlike the other build-artifacts stages, this is a manual
-    job that allows maintainer to build RPMs from TARBALL.
-    Uses the 'build-artifacts-manual.sh' file.
+
+    Trigger: Manual run from the Jenkins job.<br>
+    Action: Build official RPMs from TARBALL.<br>
+    Uses the 'build-artifacts-manual.sh' file.<br>
 
  * 'check-patch':
-    Runs on every new patch-set sent to Gerrit.
-    Uses the 'check-patch.*' files
-    Uses the 'on-change' trigger type.
 
- * 'check-merge':
-    Runs on every new commit merged.
-    Uses the 'check-merged.*' files
-    Uses the 'on-change' trigger type.
+    Trigger: Runs on every new patchset.<br>
+    Action: Runs any code written in the check-patch.sh script.<br>
+    Uses the 'check-patch.*' files<br>
+
+ * 'check-merged':
+
+    Trigger: Runs on every new commit merged.<br>
+    Action: Runs any code written in the check-merged.sh script.<br>
+    Uses the 'check-merged.*' files<br>
+
 
 Scripts
 ---------------------------------------
