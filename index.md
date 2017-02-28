@@ -20,6 +20,7 @@ Welcome to oVirt Infra docs's documentation!
 
 ## CI
 * [Build and test standards](CI/Build_and_test_standards.html)
+* [The transactional mirrors](CI/Transactional_mirrors.html)
 * [Proxy](CI/Proxy.html)
 * [System Groovy Jenkins Scripts](CI/System_groovy_jenkins_scripts.html)
 * [Gerrit custom hooks](CI/Gerrit_Hooks.html)
