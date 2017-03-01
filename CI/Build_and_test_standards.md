@@ -32,32 +32,32 @@ be described in the 'scripts' section below.
 
 Listed below are the current supported stages:
 
- * 'build-artifacts':
+ * *'build-artifacts'*:
 
     Trigger: After a commit (patch) is merged.<br>
     Action: build project artifacts and deploy to yum repos.<br>
     Uses the 'build-artifacts.*' files.
 
- * 'build-artifacts-on-demand':
+ * *'build-artifacts-on-demand'*:
 
     This isn't a real stage, but it has its own trigger and jobs.<br>
     Trigger: comment 'ci please build' is added to a patch.<br>
     Action: build project artifacts on demand from an open patch.<br>
     Uses the 'build-artifacts.*' files.
 
- * 'build-artifacts-manual':
+ * *'build-artifacts-manual'*:
 
     Trigger: Manual run from the Jenkins job.<br>
     Action: Build official RPMs from TARBALL.<br>
     Uses the 'build-artifacts-manual.sh' file.<br>
 
- * 'check-patch':
+ * *'check-patch'*:
 
     Trigger: Runs on every new patchset.<br>
     Action: Runs any code written in the check-patch.sh script.<br>
     Uses the 'check-patch.*' files<br>
 
- * 'check-merged':
+ * *'check-merged'*:
 
     Trigger: Runs on every new commit merged.<br>
     Action: Runs any code written in the check-merged.sh script.<br>
@@ -130,9 +130,9 @@ with a newline separated list of packages to install. If the packages are
 distribution specific, you must put them on their own requirements file, that
 should have the name **build-artifacts.packages.${releasever}** is one of:
 
-    * fc20
-    * fc21
-    * fc22
+    * fc23
+    * fc24
+    * fc25
     * el6
     * el7
 
@@ -180,6 +180,11 @@ For example, if your build scripts needs git to get the version string, add it
 as a dependency, if it needs autotools, maven, pep8, tox or similar, declare it
 too.
 
+To improve the CI system performance the testing environment may be cached.
+Therefore, there is no guarantee that the latest versions of the dependency
+packages will be installed. To ensure you get the latest packages, you can
+install a package manager (e.g. "`yum`" or "`dnf`") and use it from your
+scripts.
 
 Testing the scripts locally
 ----------------------------
@@ -252,17 +257,6 @@ simplified as:
         el7
 
 A lot simpler!
-You can specify more than one chroot at a time, for example to run on el6 and
-el7, just:
-
-    mock_runner.sh \
-        --mock-confs-dir ../jenkins/mock_configs \
-        --build-only \
-        el6 \
-        el7
-
-If none passed, will run on all of the defaults.
-
 
 Adding a project to standard-ci in Jenkins
 ------------------------------------------
@@ -317,31 +311,24 @@ An example for a project yaml file:
         version:
           - master:
               branch: master
+          - 4.1:
+              branch: ovirt-engine-dwh-4.1
           - 4.0:
               branch: ovirt-engine-dwh-4.0
-          - 3.6:
-              branch: ovirt-engine-dwh-3.6
         stage:
           - check-patch
           - check-merged
         distro:
-          - el6
           - el7
-          - fc23
           - fc24
+          - fc25
         exclude:
           - version: master
-            distro: el6
-          - version: master
-            distro: fc23
-          - version: 4.0
-            distro: el6
-          - version: 4.0
             distro: fc24
-          - version: 3.6
-            distro: fc24
-          - version: 3.6
-            distro: fc23
+          - version: 4.0
+            distro: fc25
+          - version: 4.1
+            distro: fc25
         trigger: 'on-change'
         arch: x86_64
         jobs:
@@ -353,14 +340,7 @@ An example for a project yaml file:
         stage: build-artifacts  # the stage parameter is overwritten
         jobs:
           - '{project}_{version}_build-artifacts-{distro}-{arch}'
-
-    - project:
-        <<: *base-params  # this syntax indicates inheritance
-        name: ovirt-dwh_build-artifacts-manual
-        stage: build-artifacts-manual  # the stage parameter is overwritten
-        trigger: manual  # the trigger parameter is overwritten
-        jobs:
-          - '{project}_{version}_build-artifacts-manual-{distro}-{arch}'
+          - '{project}_{version}_{stage}-on-demand-{distro}-{arch}'
 
 
 #### A note for adding build-artifacts jobs:
@@ -377,8 +357,16 @@ When creating build-artifacts-manual jobs, the 'trigger' parameter should be
 set to 'manual', and the 'jobs' parameter value should be in the form of: <br>
 '{project}_{version}_build-artifacts-manual-{distro}-{arch}' <br>
 As a result there should be a separate project definition for the
-build-artifacts-manual jobs. See example above.
+build-artifacts-manual jobs. See example below:
 
+    # Only needed to allow building from TARBALLs
+    - project:
+        <<: *base-params  # this syntax indicates inheritance
+        name: ovirt-dwh_build-artifacts-manual
+        stage: build-artifacts-manual  # the stage parameter is overwritten
+        trigger: manual  # the trigger parameter is overwritten
+        jobs:
+          - '{project}_{version}_build-artifacts-manual-{distro}-{arch}'
 
 Additionally, for build-artifacts-manual, another job should be
 created, named '{project}_any_build-artifacts-manual'. In this job the user
