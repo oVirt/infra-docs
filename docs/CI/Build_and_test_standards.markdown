@@ -412,4 +412,3 @@ the jobs/confs directory.
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
 [mock_install_page]: https://fedoraproject.org/wiki/Projects/Mock
 [oVirt_Jenkins]: http://jenkins.ovirt.org
-[Adding a yamlized jobs to Jenkins with JJB]: ./Adding_yamlized_jobs_with_JJB.html

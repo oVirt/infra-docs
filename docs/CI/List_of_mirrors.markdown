@@ -29,6 +29,6 @@ fedora-updates-fc24         | Fedora 24 'updates' repo
 fedora-base-fc25            | Fedora 25 'base' repo
 fedora-updates-fc25         | Fedora 25 'updates' repo
 
-[1]: Transactional_mirrors.html
-[2]: Build_and_test_standards.html
+[1]: Transactional_mirrors.markdown
+[2]: Build_and_test_standards.markdown
 [3]: http://jenkins.ovirt.org/search/?q=system-sync_mirrors

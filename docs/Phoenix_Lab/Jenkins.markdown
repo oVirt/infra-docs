@@ -141,7 +141,7 @@ should also be moved to puppet in the future.
 
 
 
-[p_dev]: http://ovirt-infra-docs.readthedocs.io/en/latest/General/Puppet.html
+[p_dev]: ../General/Puppet.markdown
 [plugin_disc]: https://github.com/nvgoldin/jenkins-scripts/blob/master/plugins_discover.py
 [jenkins_repo]: http://pkg.jenkins-ci.org/redhat-stable/
 [jenkins_war]: http://mirrors.jenkins-ci.org/war-stable

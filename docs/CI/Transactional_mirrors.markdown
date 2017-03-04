@@ -71,7 +71,7 @@ it leaves the configuration for it in place as-is. This means that repo ids need
 to be properly specified for the mirrors to be in use.
 
 [1]: https://gerrit.ovirt.org/gitweb?p=jenkins.git;a=blob;f=scripts/mirror_client.py
-[2]: Proxy.html
+[2]: Proxy.markdown
 
 Using mirrors for standard-CI jobs
 ----------------------------------
@@ -96,8 +96,8 @@ GlusterFS CentOS SIG repo:
 To get a list of possible repo ids to use, please see the [List of CI
 mirrors][4].
 
-[3]: Build_and_test_standards.html
-[4]: List_of_mirrors.html
+[3]: Build_and_test_standards.markdown
+[4]: List_of_mirrors.markdown
 
 The mirror sync process
 -----------------------

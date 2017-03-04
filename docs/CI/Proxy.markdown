@@ -11,7 +11,7 @@ The proxy has two services to be able to provide a reliable and fast cache, the
 repositories, to be able to get the failover and speed increases from the
 mirrorlists but being able to properly cache the results.
 
-  [Phoenix lab]: ../Phoenix_Lab/Overview.html
+  [Phoenix lab]: ../Phoenix_Lab/Overview.markdown
   [Squid]:http://www.squid-cache.org/
 
 

@@ -1,2 +1,3 @@
-sphinx>=1.3
-recommonmark
+tornado > 2.2.1
+livereload
+mkdocs
