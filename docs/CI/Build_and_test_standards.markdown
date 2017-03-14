@@ -4,6 +4,17 @@ Build and test standards
 This is the recommended setup to be able to build and test a project using the
 ovirt infrastructure.
 
+Docker support
+-----------------------------------
+
+We support building docker images in Standard CI. In order to build a docker
+image for your project, you'll need to follow the Standard CI workflow, with
+some adjustments which are described on the sessions below, you'll be able to
+build a docker image.
+
+*Example docker project*:<br>
+[ocivrt-container-engine]: 
+https://gerrit.ovirt.org/#/admin/projects/ovirt-container-engine
 
 The automation directory
 -----------------------------------
@@ -141,6 +152,11 @@ available.
 This technique can be applied to any requirements file (req/packages, repos or
 mounts)
 
+In order to build with docker, please add the following package to your
+**.packages** file:
+
+    docker
+
 
 #### Repositories
 
@@ -165,7 +181,12 @@ the format:
     src_dir[:dst_dir]
 
 If no dst_dir is specified, the src_dir will be mounted inside the chroot with
-the same path it has outside.
+the same path it has outside.<br>
+
+In order to build with docker please add the following mount to your 
+**.mounts** file:
+
+    /var/run/docker.sock:/var/run/docker.sock
 
 
 Extra note on dependencies
