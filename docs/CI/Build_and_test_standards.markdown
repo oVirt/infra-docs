@@ -4,6 +4,15 @@ Build and test standards
 This is the recommended setup to be able to build and test a project using the
 ovirt infrastructure.
 
+Docker support
+-----------------------------------
+
+We support building docker images in Standard CI. In order to build a docker
+image for your project, you'll need to follow the Standard CI workflow, with
+some adjustments which are described on the sessions below, you'll be able to
+build a docker image.
+
+*Example docker project*: [ovirt_container_engine] 
 
 The automation directory
 -----------------------------------
@@ -141,6 +150,11 @@ available.
 This technique can be applied to any requirements file (req/packages, repos or
 mounts)
 
+In order to build with docker, please add the following package to your
+**.packages** file:
+
+    docker
+
 
 #### Repositories
 
@@ -165,7 +179,14 @@ the format:
     src_dir[:dst_dir]
 
 If no dst_dir is specified, the src_dir will be mounted inside the chroot with
-the same path it has outside.
+the same path it has outside.<br>
+
+
+#### Docker support
+In order to build with docker, you'll have to mount the docker.sock<br>
+add to your **.mounts** file:
+
+    /var/run/docker.sock:/var/run/docker.sock
 
 
 Extra note on dependencies
@@ -412,3 +433,4 @@ the jobs/confs directory.
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
 [mock_install_page]: https://fedoraproject.org/wiki/Projects/Mock
 [oVirt_Jenkins]: http://jenkins.ovirt.org
+[ovirt_container_engine]: https://gerrit.ovirt.org/#/admin/projects/ovirt-container-engine
