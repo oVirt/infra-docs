@@ -12,9 +12,7 @@ image for your project, you'll need to follow the Standard CI workflow, with
 some adjustments which are described on the sessions below, you'll be able to
 build a docker image.
 
-*Example docker project*:<br>
-[ocivrt-container-engine]: 
-https://gerrit.ovirt.org/#/admin/projects/ovirt-container-engine
+*Example docker project*: [ovirt_container_engine] 
 
 The automation directory
 -----------------------------------
@@ -183,8 +181,10 @@ the format:
 If no dst_dir is specified, the src_dir will be mounted inside the chroot with
 the same path it has outside.<br>
 
-In order to build with docker please add the following mount to your 
-**.mounts** file:
+
+#### Docker support
+In order to build with docker, you'll have to mount the docker.sock<br>
+add to your **.mounts** file:
 
     /var/run/docker.sock:/var/run/docker.sock
 
@@ -433,3 +433,4 @@ the jobs/confs directory.
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
 [mock_install_page]: https://fedoraproject.org/wiki/Projects/Mock
 [oVirt_Jenkins]: http://jenkins.ovirt.org
+[ovirt_container_engine]: https://gerrit.ovirt.org/#/admin/projects/ovirt-container-engine
