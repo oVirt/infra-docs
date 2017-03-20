@@ -26,3 +26,6 @@ Welcome to oVirt Infra docs's documentation!
 * [System Groovy Jenkins Scripts](CI/System_groovy_jenkins_scripts.markdown)
 * [Gerrit custom hooks](CI/Gerrit_Hooks.markdown)
 * [Adding a yamlized jobs to Jenkins with JJB](CI/Adding_yamlized_jobs_with_JJB.markdown)
+* [Adding Github projects to Standard CI](CI/Github_Integration.markdown)
+
+
