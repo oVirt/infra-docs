@@ -137,3 +137,22 @@ The "all_latest" files make it possible to obtain all the information the mirror
 injection process needs with a single HTTP request to the mirrors server.
 
 [5]: https://gerrit.ovirt.org/gitweb?p=jenkins.git;a=blob;f=scripts/mirror_mgr.sh
+
+Rolling mirrors back to previous snapshot
+-----------------------------------------
+Since we have a snapshot creation process in place for the mirrors, it is easy
+to make clients use an older snapshot in case the most recent snapshot becomes
+unusable for some reason.
+
+Here is the process to effectively roll back a mirror to a previous snapshot:
+
+1. Log in to the mirrors server.
+2. Edit the mirror's "`latest.txt`" file. For a mirror named "`foo`" it would be
+   at "`/var/www/html/repos/yum/foo/latest.txt`".
+3. Replace the name of the latest snapshot in the file to the name of an older
+   snapshot. **Be careful to use a name of an existing snapshot**. You can see
+   the available snapshots for "`foo`" by listing the
+   "`/var/www/html/repos/yum/foo`" directory. The snapshots would be directories
+   with dates for names.
+4. Run the "`system-mk_mirrors_index`" job to update the "`all_latest.*`" files
+   with the new desired snapshot state.
