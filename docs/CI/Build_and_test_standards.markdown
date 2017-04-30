@@ -36,32 +36,38 @@ Listed below are the current supported stages:
 
     Trigger: After a commit (patch) is merged.<br>
     Action: build project artifacts and deploy to yum repos.<br>
-    Uses the 'build-artifacts.*' files.
+    Uses the 'build-artifacts.*' files.<br><br>
 
  * *'build-artifacts-on-demand'*:
 
     This isn't a real stage, but it has its own trigger and jobs.<br>
     Trigger: comment 'ci please build' is added to a patch.<br>
     Action: build project artifacts on demand from an open patch.<br>
-    Uses the 'build-artifacts.*' files.
+    Uses the 'build-artifacts.*' files.<br><br>
 
  * *'build-artifacts-manual'*:
 
     Trigger: Manual run from the Jenkins job.<br>
     Action: Build official RPMs from TARBALL.<br>
-    Uses the 'build-artifacts-manual.sh' file.<br>
+    Uses the 'build-artifacts-manual.sh' file.<br><br>
 
  * *'check-patch'*:
 
     Trigger: Runs on every new patchset.<br>
     Action: Runs any code written in the check-patch.sh script.<br>
-    Uses the 'check-patch.*' files<br>
+    Uses the 'check-patch.*' files<br><br>
 
  * *'check-merged'*:
 
     Trigger: Runs on every new commit merged.<br>
     Action: Runs any code written in the check-merged.sh script.<br>
-    Uses the 'check-merged.*' files<br>
+    Uses the 'check-merged.*' files<br><br>
+
+ * *'poll-upstream-sources'*:
+
+    Trigger: Runs scheduled.<br>
+    Action: Runs any code written in the poll-upstream-sources.sh script.<br>
+    Uses the 'poll-upstream-sources.*' files<br><br>
 
 
 Scripts
@@ -103,6 +109,22 @@ branch, it should run all the tests that you find required for any change to
 get merged, that might include all the tests you run for *check-patch.sh*, but
 also some functional tests or other tests that require mote time/resources. It
 will not be run as often as the *check-patch.sh*
+
+
+### poll-upstream-sources.sh
+
+This script will run once a day.
+It'll basically update the current project and branch with the latest commit
+of the corresponding upstream project.
+For example, if a project has an upstream project (an upstream
+project is a project containing all code/files/etc minus some modifications
+in the current project) in github, the poll stage will send a patch with the
+latest commit in the corresponding branch of the upstream project.
+Commit will be held in a special file named upstream_sources.yaml which will
+lay under the automation folder.
+upstream_sources.yaml will contain repository url, commit SHA and branch.
+It should run whatever a project maintainer thinks needs to be tested before
+updating the latest code from the upstream project
 
 
 ### Running parallel tests
@@ -391,6 +413,25 @@ An example for adding the '{project}_any_build-artifacts-manual' to yaml:
           - 'master'
         jobs:
           - '{project}_any_build-artifacts-manual'
+
+#### A note for adding poll-upstream-sources jobs:
+When creating poll-upstream-sources jobs, the 'trigger' parameter should be
+set to 'timed'.
+A poll-upstream-sources project should look like this:
+- project:
+    name: ds-vdsm_poll
+    node-filter: worker && kvm
+    project: vdsm
+    stage: poll-upstream-sources
+    trigger: 'timed'
+    git-server: gerrit.ovirt.org
+    version:
+      - master:
+          branch: master
+    distro: el7
+    arch: x86_64
+    jobs:
+        - '{project}_{version}_{stage}-{distro}-{arch}'
 
 ### Creating an scm file for the project:
 A {project}.yaml file should be added under the jobs/confs/yaml/scms directory.
