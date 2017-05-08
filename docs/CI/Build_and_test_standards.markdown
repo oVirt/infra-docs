@@ -418,20 +418,21 @@ An example for adding the '{project}_any_build-artifacts-manual' to yaml:
 When creating poll-upstream-sources jobs, the 'trigger' parameter should be
 set to 'timed'.
 A poll-upstream-sources project should look like this:
-- project:
-    name: ds-vdsm_poll
-    node-filter: worker && kvm
-    project: vdsm
-    stage: poll-upstream-sources
-    trigger: 'timed'
-    git-server: gerrit.ovirt.org
-    version:
-      - master:
-          branch: master
-    distro: el7
-    arch: x86_64
-    jobs:
-        - '{project}_{version}_{stage}-{distro}-{arch}'
+
+    - project:
+        name: ds-vdsm_poll
+        node-filter: worker && kvm
+        project: vdsm
+        stage: poll-upstream-sources
+        trigger: 'timed'
+        git-server: gerrit.ovirt.org
+        version:
+          - master:
+              branch: master
+        distro: el7
+        arch: x86_64
+        jobs:
+          - '{project}_{version}_{stage}-{distro}-{arch}'
 
 ### Creating an scm file for the project:
 A {project}.yaml file should be added under the jobs/confs/yaml/scms directory.
