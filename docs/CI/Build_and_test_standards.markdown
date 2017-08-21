@@ -231,7 +231,7 @@ Extra note on dependencies
 The tests will run on a minimal installation environment, so do not expect
 anything to be installed, if you are not sure if your dep is installed, declare
 it. Note that the distribution matrix to run the tests on is defined in the
-yaml files at the [jenkins repo][jenkins_git_repo].
+YAML files at the [jenkins repo][jenkins_git_repo].
 
 For example, if your build scripts needs git to get the version string, add it
 as a dependency, if it needs autotools, maven, pep8, tox or similar, declare it
@@ -338,48 +338,87 @@ A lot simpler!
 Adding a project to standard-ci in Jenkins
 ------------------------------------------
 A project can be configured to run standard tests in [jenkins][oVirt_Jenkins].
-The configurations are done by creating two files in the
-[jenkins repo][jenkins_git_repo]:
-1.  A project yaml file, named '{project name}_standard.yaml'
-2.  An scm yaml file for the project git repo, named {project}.yaml.
+The configurations are done by creating a project YAML file in the
+[jenkins repo][jenkins_git_repo].
 
-The yaml files will be read by jenkins-job-builder and the configurations will
+The YAML files will be read by jenkins-job-builder and the configurations will
 be deployed to jenkins once the patch is merged.
-[Here][Adding a yamlized jobs to Jenkins with JJB] you can find more info
-about testing/updating yaml configurations before the patch is merged.
+[Here][Adding a YAMLized jobs to Jenkins with JJB] you can find more info
+about testing/updating YAML configurations before the patch is merged.
 
-### Creating a project yaml file:
+### Creating a project YAML file:
 First, a project directory should be created in [jenkins repo][jenkins_git_repo]
-under jobs/confs/projects. Within this directory, a project yaml file named
+under jobs/confs/projects. Within this directory, a project YAML file named
 '{project name}_standard.yaml' should be created and the following needs to be
 specified:
 
 * **project** - the name of the project(s) to create the jobs for
-* **version and branch name** - the project version(s) and the name of the git
-branch for the specified version
+* **version and branch name** - The oVirt versions that the project targets and
+  the branches in the project source directory that match them should be
+  specified. Only supported oVirt versions should be used. If other versions are
+  specified, they will not be processed by the automated system testing and
+  release jobs.
+  For example, if a project has the `master` and `1.0` branches targeting the
+  `master` and `4.1` oVirt versions respectively, this should be set as
+  following:
+
+        version:
+          - master:
+              branch: master
+          - 4.1:
+              branch: '1.0'
+
+    The same branch can be set to target multipile oVirt versions. If the same
+    branch targets all oVirt versions, a short-hand syntax like the following
+    could be used:
+
+        version: [ master, '4.1' ]
+        branch: master
+
 * **stage** - the standard stage(s) to create the jobs for. Can be either:
-  * *check-patch*
-  * *check-merged*
-  * *build-artifacts* - see below an important note for this stage
-  * *build-artifacts-manual* - see below an important note for this stage
-* **distro** - the distribution that should be tested (e.g. el7, fc24)
+    * *check-patch*
+    * *check-merged*
+    * *build-artifacts* - see below an important note for this stage
+    * *build-artifacts-manual* - see below an important note for this stage
+    * *poll-upstream-sources*
 * **trigger** - how should the jobs be triggered. Can be either:
-  * *timed* - in this case, 'trigger-times' key should also be specified, with
-    the schedule value
-  * *on-change* - in this case the appropriate '{stage}_trigger_on-change'
-    trigger will be used. These triggers are already configured in
-    [jenkins repo][jenkins_git_repo],
-    under jobs/confs/yaml/triggers/standard.yaml
-  * *manual* - for build-artifacts-manual stage, the trigger should be set to
-    manual
-* **arch** - the architecture that should be tested
+    * *timed* - in this case, 'trigger-times' key should also be specified,
+      with the schedule value
+    * *on-change* - in this case the appropriate '{stage}_trigger_on-change'
+      trigger will be used. These triggers are already configured in
+      [jenkins repo][jenkins_git_repo],
+      under jobs/confs/yaml/triggers/standard.yaml
+    * *manual* - for build-artifacts-manual stage, the trigger should be set
+      to manual
 
-The jobs that will be created will be given a name in the form of: <br>
-'{project}\_{version}\_{stage}-{distro}-{arch}'. <br>The specific jobs names that
-will be created is a cartesian product of the different values of the above
-confs. Specific combinations can be excluded by specifing them in yaml.
+The following paramters can be specified in YAML to customize various setting
+for the project. If left unspecified, default values would be used:
 
-An example for a project yaml file:
+* **distro** - One or more distributions that should be tested (e.g. `el7`,
+  `fc24`), If unspecified only `el7` jobs will be created.
+* **arch** - One or more architectures that should be tested (e.g. `x86_64`,
+  `ppc64le`). If unspecified, only `x86_64` will be tested.
+* **scmtype** - The type of SCM to use - Currently only `gerrit` is supported.
+* **gerrit-subpath** - A sub directory in the Gerrit server where the project
+  could be found. This can be used for working with Gerrit servers that include
+  sub directories.
+* **git-proto** - The protocol to use for cloning from git. The default value
+  should work in most cases.
+* **git-server** - The GIT server to clone source from. This should only be
+  changed in rare cases.
+* **gerrit-server** - The Gerrit server to listen for events from. This should
+  only be changed in rare cases, and should typically be set to the same value
+  as `git-server`.
+
+The jobs that will be created will be given a name in the form of:
+
+    '{project}_{version}_{stage}-{distro}-{arch}'
+
+The specific jobs names that will be created is a cartesian product of the
+different values of the above confs. Specific combinations can be excluded by
+specifying them in YAML with the `excludes` option.
+
+An example for a project YAML file:
 
     - project: &base-params  # this syntax is used for inheritance
         name: ovirt-dwh_standard
@@ -400,12 +439,9 @@ An example for a project yaml file:
           - fc24
           - fc25
         exclude:
-          - version: master
-            distro: fc24
-          - version: 4.0
-            distro: fc25
-          - version: 4.1
-            distro: fc25
+          - { version: master, distro: fc24 }
+          - { version: 4.0,    distro: fc25 }
+          - { version: 4.1,    distro: fc25 }
         trigger: 'on-change'
         arch: x86_64
         jobs:
@@ -419,12 +455,14 @@ An example for a project yaml file:
           - '{project}_{version}_build-artifacts-{distro}-{arch}'
           - '{project}_{version}_{stage}-on-demand-{distro}-{arch}'
 
+More examples can be found in the [jenkins repo][jenkins_git_repo] under
+the jobs/confs directory.
 
 #### A note for adding build-artifacts jobs:
 When creating build-artifacts jobs, the 'jobs' parameter value under the
 project's definition should be in the form of: <br>
 '{project}_{version}_build-artifacts-{distro}-{arch}' <br>
-This is because the way that the yaml template of the build-artifacts jobs is
+This is because the way that the YAML template of the build-artifacts jobs is
 configured. As a result, there should be a separate project definition block
 for the check-patch/check-merged and the build-artifacts jobs.
 See example above.
@@ -454,10 +492,10 @@ them. The triggered jobs will then run the build-artifacts-manual.sh script
 inside a mock environment.
 
 In order to create this job, another project configuration should be added to
-the project yaml file, specifying the project name and the list of supported
+the project YAML file, specifying the project name and the list of supported
 versions (this list will be shown to the user as a drop down menu).
 
-An example for adding the '{project}_any_build-artifacts-manual' to yaml:
+An example for adding the '{project}_any_build-artifacts-manual' to YAML:
 
     - project:
         project: ovirt-dwh  # you may also use inheritance for the project name
@@ -486,22 +524,6 @@ A poll-upstream-sources project should look like this:
         arch: x86_64
         jobs:
           - '{project}_{version}_{stage}-{distro}-{arch}'
-
-### Creating an scm file for the project:
-A {project}.yaml file should be added under the jobs/confs/yaml/scms directory.
-The scm name should be in the format of {project}-gerrit.
-
-An example for a project yaml file:
-
-    - scm:
-        name: ovirt-dwh-gerrit
-        scm:
-          - gerrit:
-              project: ovirt-dwh
-              git-server: '{git-server}'
-
-More examples can be found in the [jenkins repo][jenkins_git_repo] under
-the jobs/confs directory.
 
 
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
