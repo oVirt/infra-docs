@@ -212,10 +212,29 @@ Testing the scripts locally
 ----------------------------
 
 To test the scripts locally, you can use the *mock\_runner.sh* script that is
-stored in the [jenkis repo][jenkins_git_repo], under mock_config directory.
+stored in the [jenkins repo][jenkins_git_repo], under mock_config directory.
 
-Take into account that you must have mock installed and your user should be
-able to run it, if you don't, check the [mock help page][mock_install_page]
+#### How to setup 'mock' locally
+
+First you'll need to install the 'mock' package if its not installed:
+
+    sudo yum install -y mock
+
+Add your $username to the 'mock' group in order to run it:
+
+    usermod -a -G mock $username
+
+Apply changes by re-login with your user:
+
+    su - $username
+
+Verify you're now part of the mock group:
+
+    groups
+
+For more info, check the [mock project page][mock_project_page].
+
+#### Running mock_runner.sh locally
 
 The *mock\_runner.sh* script will use the default mock configs, located at
 */etc/mock* dir on your machine, but we recommend using the same ones that we
@@ -253,7 +272,7 @@ know which one to start the shell on. Then you can explore the contents of the
 chroot. **Remember that the project dir is mounted on */tmp/run* directory**
 
 
-### Specifying which chroots to run on
+#### Specifying which chroots to run on
 
 The complete specification of the chroot is in the form:
 
@@ -452,5 +471,5 @@ the jobs/confs directory.
 
 
 [jenkins_git_repo]: https://gerrit.ovirt.org/#/admin/projects/jenkins
-[mock_install_page]: https://fedoraproject.org/wiki/Projects/Mock
+[mock_project_page]: https://github.com/rpm-software-management/mock/wiki
 [oVirt_Jenkins]: http://jenkins.ovirt.org
