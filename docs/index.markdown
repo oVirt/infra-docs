@@ -13,6 +13,7 @@ Welcome to oVirt Infra docs's documentation!
 
 ## Phoenix lab
 * [Overview](Phoenix_Lab/Overview.markdown)
+* [Networking](Phoenix_Lab/Networking.markdown)
 * [oVirt hosts](Phoenix_Lab/oVirt_Hosts.markdown)
 * [Configureing the ssh tunnel to get spice](Phoenix_Lab/Ssh_Spice_Tunnel.markdown)
 * [Storage hosts](Phoenix_Lab/Storage_Hosts.markdown)
