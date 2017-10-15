@@ -13,32 +13,36 @@ Prerequisites
   host
 * Be an owner of the oVirt Project on github to create repos to sync to
 
-Creating the Group in Gerrit
+Creating a Group in Gerrit
 ============================
 
-Group creation is found in the Gerrit web UI under `People`.
+Group creation can be found in the Gerrit web UI under `People`.
 
 The convention used by oVirt is for every project in Gerrit to have a matching
-group, comprised of the users who will have permissions to that project. Even
-though this isn't strictly necessary, and a project can be created which
-re-uses an existing group which contains the requested members, it's good
-practice to follow anyway in order to make it more flexible.
+project owner group which includes the project + `-maintainers` name,
+comprised of the users who will have permissions to that project.
 
-For example, a `foobar` project should have a `foobar` group.
+For example, a `foobar` project should have a `foobar-maintainers` group.
 
-It's easy to add and remove members to a group later. It's possible to change
-the permissions of a project to a new group later if the set of users
-contributing to a given project changes, and it's not the same as the
-group from a different project, but it's better to simply spend the time at
-the outset.
+It's easy to add or remove members to a group either
+from a specific project => `Access` =>
+clicking on `<project>-maintainers` group  => members
+or
+from `People` => `<project>-mintainers` group => members
 
-Creating the Project in Gerrit
+Creating a Project in Gerrit
 ==============================
 
 Once the group is created, proceed to creating the project. This is found
-in the Gerrit web UI under "Projects".
+in the Gerrit web UI under `Projects` => `Create New Project`.
 
-Create a project with the desired name. If this is initial development, with
+Create the project with your desired name and inherit project rights
+from All-Projects.
+
+* Project Name: 'your desired project name'
+* Rights Inherit From: `All-Projects`
+
+If this is initial development, with
 no git history which will be pulled in from Github or elsewhere, check the
 "Create initial empty commit" checkbox.
 
@@ -55,31 +59,50 @@ INHERIT):
 * Automatically resolve conflicts: FALSE
 * Require `Change-Id` in commit message: TRUE
 
-Setting Permissions
-===================
+Setting permissions to a project in Gerrit
+===========================================
 
-Click the `Access` label under `Projects`.
+Basically all the default permissions are inherited from `All-Projects` group.
+It's set during the project creation.
 
-Change `Reference` to `refs/*`.
+The default permissions include the following rights:
 
-There is a drop-down box filled with `Add Permission...`. Pulling this down
-will show a list of possible rights for the repository, and selecting one will
-add it to the list, with an input box which accepts a group. Set the following
-rights to `ALLOW`, granted to the group you created earlier.
+|   **Right(s)**                        |   **Group(s)**                      |
+|---------------------------------------|-------------------------------------|
+|   View (Read) projects and patches    |   Anonymous and Registered Users    |
+|   Add new patch                       |   Registered Users                  |
+|   Forge Author Identity               |   Registered Users                  |
+|   Forge Committer Identity            |   Project Owners                    |
+|   Add Code Review +2 label            |   Project Owners                    |
+|   Add Code Review +1 label            |   Registered Users                  |
+|   Add Continuous Integration +1 label |   Project Owners                    |
+|   Add Verified +1 label               |   Registered Users                  |
+|   Remove a Reviewer                   |   Project Owners                    |
+|   Submit a patch                      |   Project Owners                    |
+|   Edit a Topic                        |   Registered Users                  |
+|   Create Annotated/Signed Tag         |   Project Onwers                    |
 
-* Owner
-* Abandon
-* Create Reference
-* Push Merge Commit
-* Push Annotated Tag
-* Submit
+In order to give to our group a full permission on the project,
+we must to set our group as the project `Owners` group.
 
-Then do the same for the following, with -1/+1:
+Click on the `Access` under `Projects` => `Edit`
 
-* Label Continuous-Integration
-* Label Verified
+Click on the `Add Reference` => change the Reference from `refs/heads/*` to `refs/*`.
 
-Finally, add `Label Code-Review` and set it to -2/+2
+Click on the `Add Permission...` drop-down box, it will show
+a list of possible rights for our project, select the `Owner`
+and it will add it to the list.
+
+Click on the `Add Group` and select the group you created earlier,
+and make sure that the `ALLOW` right is granted.
+
+Add a Commit Message => Click on the `Save Changes` button.
+
+Note: You can add a specific permission which will override the default one
+but it's not recommended.
+
+For example: you can change the default permission to add Verify +1 label
+to a specific group (default: Registered Users)
 
 Enabling Anonymous Cloning
 ==========================
@@ -109,9 +132,9 @@ Enabling Default Gerrit Hooks
 =============================
 
 oVirt projects supports various verification gerrit hooks which verify
-a number of common criteria for patches.	
+a number of common criteria for patches.
 You need to enable those hooks when you create a new project.
-This is most easily done by copying them from an existing project 
+This is most easily done by copying them from an existing project
 (with `cp -d` to preserve symlinks, since they are links back to base scripts).
 You should ensure that the hooks you're copying are links to `~gerrit2/review_site/hooks`
 
@@ -159,7 +182,7 @@ Each project should be on a separate line.
 In the next example only foobar project will be replicated.
 
 	projects = foobar
-	
+
 Regex can be used by adding ^ at the begging of the line
 In the next example foobar-prod and foobar-test projects will be replicated.
 
