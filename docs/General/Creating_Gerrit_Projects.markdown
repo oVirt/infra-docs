@@ -128,20 +128,52 @@ over git://
 
     touch git-export-daemon-ok
 
-Enabling Default Gerrit Hooks
+Enabling Custom Gerrit Hooks
 =============================
 
-oVirt projects supports various verification gerrit hooks which verify
-a number of common criteria for patches.
-You need to enable those hooks when you create a new project.
-This is most easily done by copying them from an existing project
-(with `cp -d` to preserve symlinks, since they are links back to base scripts).
-You should ensure that the hooks you're copying are links to `~gerrit2/review_site/hooks`
+oVirt projects support various verification gerrit hooks which handle
+integration between Gerrit and Bugzilla and can perform updates as well
+as verifications.
 
-    hooks/change-abandoned.update_tracker -> /home/gerrit2/review_site/hooks/custom_hooks/update_tracker
-    hooks/change-merged.update_tracker -> /home/gerrit2/review_site/hooks/custom_hooks/update_tracker
-    hooks/comment-added.propagate_review_values -> /home/gerrit2/review_site/hooks/custom_hooks/comment-added.propagate_review_values
-    hooks/patchset-created.update_tracker -> /home/gerrit2/review_site/hooks/custom_hooks/update_tracker
+Instead of maintaining specific hooks for specific projects, we have a custom
+hooks that are located under `~/review_site/hooks/default-hooks` directory.
+
+Inside the `default-hooks` directory the hooks are splitted into the
+following directories:
+
+1. *update*
+2. *check*
+3. *all* (includes both update and check hooks)
+
+In each directory we have links to the real hooks that are located inside
+the `custom_hooks` directory.
+
+For example:
+Inside the `check` directory we have a link to the check_bug_url hook
+
+    patchset-created.bz.1.check_bug_url -> ../../custom_hooks/check_bug_url
+
+List of all the custom hooks under each directory:
+
+directory   | hooks                     | purpose
+------------|---------------------------| -------
+update      | update_tracker            | add/update the external tracker of a bug
+            | set_modified              | change bug status from POST => MODOFIED
+            | set_post                  | change bug status from NEW/ASSIGNED => POST
+check       | check_bug_url             | check for bug url existance
+            | check_product             | check patch project == bug product
+            | check_target_milestone    | check patch branch major version == bug milestone major version
+            | check_backport            | check patch merged to all newer branches
+
+If you want to use the custom hooks you need to remove the `hooks` directory
+under your project and create a symbolic link to one of the default hooks directories
+(i.e update, check, all)
+
+This is most easily done by running the following commands:
+
+    cd ~/review_site/git/foobar.git/
+    rm -r hooks
+    ln -s ~/review_site/hooks/default-hooks/all hooks
 
 Creating the Github repository
 ==============================
