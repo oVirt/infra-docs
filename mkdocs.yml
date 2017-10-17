@@ -31,8 +31,9 @@ pages:
       - 'Using mock_runner to run Standard-CI stages': 'CI/Using_mock_runner.markdown'
       - 'Using oVirt Standard-CI with Gerrit': 'CI/Using_STDCI_with_Gerrit.markdown'
       - 'Using oVirt Standard-CI with GitHub': 'CI/Using_STDCI_with_GitHub.markdown'
-    - 'The transactional mirrors': 'CI/Transactional_mirrors.markdown'
-    - 'List of CI mirrors': 'CI/List_of_mirrors.markdown'
+    - 'The CI transactional mirrors':
+      - 'Introduction': 'CI/Transactional_mirrors.markdown'
+      - 'List of CI mirrors': 'CI/List_of_mirrors.markdown'
     - 'Proxy': 'CI/Proxy.markdown'
     - 'System Groovy Jenkins Scripts': 'CI/System_groovy_jenkins_scripts.markdown'
     - 'Gerrit custom hooks': 'CI/Gerrit_Hooks.markdown'
