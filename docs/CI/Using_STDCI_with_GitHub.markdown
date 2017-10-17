@@ -193,7 +193,7 @@ To configure the hook manually, go the project 'Settings' page, select
 
 In the 'Payload URL' field fill in the following URL:
 
-    http://jenkins-staging.phx.ovirt.org/ghprbhook/
+    http://jenkins.ovirt.org/ghprbhook/
 
 In 'Content Type' fill in '`application/x-www-form-urlencoded`'
 
@@ -212,7 +212,7 @@ To configure the hook, go the project 'Settings' page, select
 
 In the 'Payload URL' field fill in the following URL:
 
-    http://jenkins-staging.phx.ovirt.org/generic-webhook-trigger/invoke
+    http://jenkins.ovirt.org/generic-webhook-trigger/invoke
 
 In 'Content Type' fill in '`application/json`'
 
