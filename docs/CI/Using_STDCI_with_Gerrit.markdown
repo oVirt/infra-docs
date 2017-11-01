@@ -37,9 +37,14 @@ trigger phrases as comments on Gerrit patches.
 
 The following table specifies which trigger phrases can be used:
 
-Trigger phrase  | What it does
-----------------|----------------------------------
-ci please build | Run the '*build-artifacts*' stage
+Trigger phrase     | What it does
+-------------------|----------------------------------
+ci please build    | Run the '*build-artifacts*' stage
+ci re-merge please | Re-run post-merge behaviour. [*](#fn1)
+
+<small><a name="fn1">\*</a> This should only be used on the latest merged patch of a
+project. **Using this on an unmerged or an older patch will yield unexpected
+resuts!**</small>
 
 The contributors white list
 ---------------------------
