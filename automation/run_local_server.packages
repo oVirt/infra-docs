@@ -3,3 +3,5 @@ python-six
 python-singledispatch
 python2-backports_abc
 mkdocs
+http://cbs.centos.org/kojifiles/packages/fontawesome-fonts/4.1.0/2.el7/noarch/fontawesome-fonts-4.1.0-2.el7.noarch.rpm
+http://cbs.centos.org/kojifiles/packages/fontawesome-fonts/4.1.0/2.el7/noarch/fontawesome-fonts-web-4.1.0-2.el7.noarch.rpm

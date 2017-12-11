@@ -21,6 +21,9 @@ Welcome to oVirt Infra docs's documentation!
 * [Storage hosts](Phoenix_Lab/Storage_Hosts.markdown)
 * [Jenkins VM](Phoenix_Lab/Jenkins.markdown)
 
+## Other Equipment
+* [s390x (Mainframe) slave VM](Other/s390x_slave_VM.markdown)
+
 ## CI
 * [Build and test standards](CI/Build_and_test_standards.markdown)
     * [Using mock_runner to run Standard-CI stages](CI/Using_mock_runner.markdown)
