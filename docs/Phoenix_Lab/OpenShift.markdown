@@ -10,12 +10,22 @@ Currently, two instances are deployed: Staging and Production.
 Both have a matching configuration with 3 masters, 3 nodes
 and a load balancer handling both API/UI and application traffic.
 
-API endpoints are:
+API endpoints
+-------------
 
 | Instance   | API endpoint                             | First master | Note |
 | ---------- | ---------------------------------------- | ------------ | ---- |
 | Production | [https://shift.ovirt.org:8443](https://shift.ovirt.org:8443) | staging-shift-master01.phx.ovirt.org | |
 | Staging    | [https://staging-shift.phx.ovirt.org:8443](https://staging-shift.phx.ovirt.org:8443) | shift-m01.phx.ovirt.org | API reachable via [OpenVPN](OpenVPN.markdown) only |
+
+Remote access using oc
+----------------------
+
+External authentication is used, so to log in remotely using
+the 'oc' console tool please first authenticate in the UI,
+click on the username in the top right corner and select
+"Copy Login Command" - this will generate an authentication
+token and copy the complete login command into the clipboard.
 
 Administrative console
 ======================
@@ -30,18 +40,28 @@ Adding a new user
 
 Authentication happens using Google Auth so anyone can log in.
 For this reason, a new user cannot do anything and permissions
-must be granted to create projects. To do that, first list users:
+must be granted to create projects. To do that, first ask the
+new user to log into the UI so that a user mapping is created.
+Then list users to confirm the new user's email is visible:
 
     oc get users
 
-Ensure the desired email address is listed.
-To enable new project creation, add the self-provisioner role:
+Single project access
+---------------------
+
+To provide access to an existing project, run the following command:
+
+    oadm policy add-role-to-user admin newuser@test.com -n NAME_OF_EXISTING_PROJECT
+
+Project creation permission
+---------------------------
+
+To allow the new user to create projects, add the self-provisioner role:
 
     oadm policy add-cluster-role-to-user self-provisioner newuser@test.com
 
-To add the user to an existing project, run the following command:
-
-    oadm policy add-role-to-user admin newuser@test.com -n NAME_OF_EXISTING_PROJECT
+Cluster admin role
+------------------
 
 In rare cases when a user needs to have instance-wide admin access, add the cluster-admin role:
 
