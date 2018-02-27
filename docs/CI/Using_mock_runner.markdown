@@ -133,3 +133,60 @@ One inside the shell you can use the `cd` command (without arguments) to get
 to where the source code is available inside the test environment. The source
 will be accessible in a path identical to the one where it is on your local
 machine.
+
+
+### Note about environment requirements
+
+
+#### Secrets/credentials
+
+If your project requires secrets as environment variables you will need to
+create a local **secrets file**.
+See [Writing STDCI secrets file documentation](Writing_STDCI_secrets_file.markdown)
+
+**How to tell that my project requires secrets as environment varialbes?**
+
+Open the corresponding `automation/${standard_stage_name}.environment.yaml`
+for the stage you want to execute locally via mock_runner. You will see a
+variable that requires it's value from secret key reference:
+
+    valueFrom: secretKeyRef
+
+**Possible exceptions**
+
+    RuntimeError: Could not find matching secret for <secret_name>
+
+May raise from two reasons:
+
+1. Missing *ci_secrets_file.yaml*. Make sure you write a local secrets file.
+2. A secret that was requested in
+   *automation/${standard_stage_name}.environment.yaml* is missing from
+   *ci_secret_file.yaml*. Make sure you added the requested variable to your
+   local secrets file.
+
+#### Runtime environment
+
+If your project requires variables from the runtime environment which in this
+case is the environment from the **shell** that you will run mock_runner from,
+you will need to export the required variable and it's value.
+
+    export REQUIRED_VAR_NAME=VALUE
+
+**How to tell that my project requires variable from runtime environment?**
+
+Open the corresponding `automation/${standard_stage_name}.environment.yaml`
+for the stage you want to execute locally via mock_runner. You will see a
+variable that requires it's value from runtimeEnv:
+
+    valueFrom: runtimeEnv
+
+**Possible exceptions**
+
+    RuntimeError: [DBM_RESOLVER] No such key <requested_variable> in env runtime.
+
+1. A variable that was requested in
+   *automation/${standard_stage_name}.environment.yaml is missing from the
+   environment. Make sure you export the correct variable name.
+
+Full environment.yaml specifications are under
+[Build and tests standards doc](Build_and_test_standards.markdown)

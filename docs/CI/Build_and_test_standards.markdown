@@ -144,13 +144,21 @@ This standard currently defines and supports several kinds of dependencies:
   ensure certain cache files are preserved between different test runs or builds
   of the same project (Typically the test environment is destroyed when a build
   or a test is done), or to gain access to certain system devices or services.
+* *Environment dependencies* - A project can require environment variables to be
+  configured inside it's run-time environment.
+  Environmnet variable values can be provided from multiple locations:
+  - Plain: Used to configure variables with custom values.
+  - Runtime environment: Used to provide environment variables from the
+    outer environment (for example Jenkins variables such as $BUILD_ID)
+  - Secrets and credentials: Used to provide auth tokens, ssh keys and etc as
+    environment variables.
 
 ### Dependency definition files
 
 Unless otherwise stated below, project dependencies are defined separately
 per-stage. And can additionally be defined separately per-distribution.
 
-Project dependencies are specified via files that are places in the
+Project dependencies are specified via files that are placed in the
 `automation` directory and take the following form:
 
     automation/<stage-name>.<dependency-type>
@@ -322,6 +330,77 @@ the testing environment will be the same as the one on the host.
 
 If there is no file on the host in *src_path*, a new empty directory will be
 created at that location.
+
+### Environment dependencies
+
+Environment dependencies allow you to configure a set of environment
+variables to be used by your build/test code.
+This mechanism can be used for:
+- Setting custom values for variables.
+- Binding variables from runtime environment such as Jenkins to gain more
+  information regarding your environment.
+- Binding secrets and credentials.
+
+Environment dependencies are specified with the `*.environment.yaml` suffix.
+The file is a list of mappings where every mapping specifies a single variable.
+Below is a syntax reference of all the available configurations in your
+environment.yaml
+
+
+#### Configure a custom value for a variable:
+
+      ---
+      - name: 'MY_CUSTOM_VAR'
+        value: 123
+
+
+Will export environment variable named `$MY_CUSTOM_VAR` with the value `123`
+
+
+#### Bind value from the run-time environment:
+
+      ---
+      - name: 'MY_CUSTOM_VAR'
+        valueFrom:
+          runtimeEnv: 'BUILD_URL'
+
+Will export environment variable named `$MY_CUSTOM_VAR` with the value of
+`$BUILD_URL` from the outer environment (The environment where the environment
+runs on).
+
+
+#### Bind value from secret key reference (credentials):
+
+      ---
+      - name: 'MY_SECRET_USERNAME'
+        valueFrom:
+          secretKeyRef:
+          name: 'my-secret'
+          key: 'username'
+
+      - name: 'MY_SECRET_PASSWORD'
+        valueFrom:
+          secretKeyRef:
+          name: 'my-secret'
+          key: 'password'
+
+Will export environment variable named `$MY_SECRET_USERNAME` with value
+of the specified key `username` under secret named `my-secret`.
+Will also export environment variable named `$MY_SECRET_PASSWORD` with
+value of the key `password` under the same secret named `my-secret`.
+
+**Note**: If your project requires environment variable from a
+secret key reference (secretKeyRef) and you want to
+[use mock_runner](Using_mock_runner.markdown) for running STDCI stages locally,
+you will need to write a local secrets file.
+[How to write STDCI secrets file](Writing_STDCI_secrets_file.markdown)
+
+#### Request for service access:
+If your project needs access to an external
+service, send an email to infra-support@ovirt.org with details of your project
+and the service you need access to. The CI team take care of the registration
+to the service and you will be able to access it through environment.yaml
+
 
 Collecting build and test results
 ---------------------------------

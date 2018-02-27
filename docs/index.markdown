@@ -27,6 +27,7 @@ Welcome to oVirt Infra docs's documentation!
 ## CI
 * [Build and test standards](CI/Build_and_test_standards.markdown)
     * [Using mock_runner to run Standard-CI stages](CI/Using_mock_runner.markdown)
+    * [Writing STDCI secrets file](CI/Writing_STDCI_secrets_file.markdown)
     * [Using oVirt Standard-CI with Gerrit](CI/Using_STDCI_with_Gerrit.markdown)
     * [Using oVirt Standard-CI with GitHub](CI/Using_STDCI_with_GitHub.markdown)
 * [The CI transactional mirrors](CI/Transactional_mirrors.markdown)
@@ -35,5 +36,3 @@ Welcome to oVirt Infra docs's documentation!
 * [System Groovy Jenkins Scripts](CI/System_groovy_jenkins_scripts.markdown)
 * [Gerrit custom hooks](CI/Gerrit_Hooks.markdown)
 * [Adding a yamlized jobs to Jenkins with JJB](CI/Adding_yamlized_jobs_with_JJB.markdown)
-
-
