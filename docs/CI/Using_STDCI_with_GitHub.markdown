@@ -64,69 +64,11 @@ The white list is temporary and will be purged from time to time. It is
 recommended that long term contributors be added as members to the GitHub
 organisation.
 
-The `automation.yaml` file
-----------------------------
-
-In order to build or test a project, the CI system requires some extra
-information that is not specified by the [Build and Test standards][1]. This
-information includes:
-
-1. Which processing architectures (E.g. `x86_64` or `ppc64le`) does the project
-   need to be built and tested on.
-2. Which Linux distribution versions does the project need to be tested on.
-3. Which branches of the project source code are meant to be released as part of
-   oVirt and which version of oVirt does each branch target.
-
-To specify this information, an `automation.yaml` file needs to be placed in
-the project's root directory with content that resembles the following example:
-
-    archs: x86_64
-    distros:
-      - fc25
-      - fc26
-      - el7
-    release_branches:
-      master: ovirt-master
-      ovirt-ansible-1.0: ovirt-4.1
-
-The file can contain the following parameters:
-
-* **archs** - The architectures on which to run tests and builds for the project
-  (E.g. `x86_64` or `ppc64le`). Multiple values an be given as a list. A single
-  value can also be specified as a plain string. If the parameter is not
-  specified the project will be built and tested on `x86_64`.
-* **distros** - The Linux distributions on which to run tests and builds for the
-  project. The following values are currently supported:
-
-    * `el6` - For 'CentOS 6'
-    * `el7` - For 'CentOS 7'
-    * `fc24` - For 'Fedora 24'
-    * `fc25` - For 'Fedora 25'
-    * `fc26` - For 'Fedora 26'
-    * `fc27` - For 'Fedora 27'
-    * `fcraw` - For 'Fedora rawhide'
-
-    Multiple values can be given as a list. A single value can also be specified
-    as a plain string. If the parameter is not specified, the project will be
-    build and tested on 'CentOS 7'.
-
-* **release_branches** - A mapping between project branches that should be built
-  and released with oVirt, and the oVirt versions they will be released with.
-  An oVirt versions is specified as the name of the change queue that tests and
-  prepares that version (E.g. `ovirt-master` or `ovirt-4.1`). A list of change
-  queues can be given for a single branch, in that case, changes merged to it
-  will be submitted to all specified change queues in parallel.
-
-All parameters in the file as well as the whole file itself are optional. If not
-specified, projects will be tested on 'CentOS 7' on 'x86_64' by default (As long
-as any standard stage scripts are included), and no release branches will be
-configured.
-
 Enabling oVirt CI for a GitHub project
 --------------------------------------
 
 Given that a project complies with the oVirt [Build and Test standards][1] and
-includes an `automation.yaml` file as specified above, a few simple steps need
+includes an `stdci.yaml` file as specified above, a few simple steps need
 to be carried out to enable oVirt CI to work with it.
 
 These steps include:

@@ -26,6 +26,7 @@ Welcome to oVirt Infra docs's documentation!
 
 ## CI
 * [Build and test standards](CI/Build_and_test_standards.markdown)
+    * [STDCI Configuration file](CI/STDCI-Configuration.markdown)
     * [Using mock_runner to run Standard-CI stages](CI/Using_mock_runner.markdown)
     * [Writing STDCI secrets file](CI/Writing_STDCI_secrets_file.markdown)
     * [Using oVirt Standard-CI with Gerrit](CI/Using_STDCI_with_Gerrit.markdown)

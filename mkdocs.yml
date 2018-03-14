@@ -35,6 +35,7 @@ pages:
       - 'Writing STDCI secrets file': 'CI/Writing_STDCI_secrets_file.markdown'
       - 'Using oVirt Standard-CI with Gerrit': 'CI/Using_STDCI_with_Gerrit.markdown'
       - 'Using oVirt Standard-CI with GitHub': 'CI/Using_STDCI_with_GitHub.markdown'
+    - 'STDCI Configuration': 'CI/STDCI-Configuration.markdown'
     - 'The CI transactional mirrors':
       - 'Introduction': 'CI/Transactional_mirrors.markdown'
       - 'List of CI mirrors': 'CI/List_of_mirrors.markdown'

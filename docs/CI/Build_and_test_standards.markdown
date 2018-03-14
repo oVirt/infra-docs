@@ -13,14 +13,6 @@ The oVirt CI system uses these standards in order to run build, test and release
 processes for projects in an automated manner. This is why these standards are
 also known as "Standard-CI" or "STDCI".
 
-The automation directory
-------------------------
-
-The basis of the build and tests standards is the `automation` directory. This
-directory needs to reside at the root of the project's source code and it
-contains all the various files that specify how to preform various operations
-with the project's source code.
-
 Standard CI 'Stages'
 --------------------
 
@@ -72,11 +64,106 @@ automatically generate appropriate source code changes.  The CI system run this
 stage periodically. This stage is also used in conjunction with the source code
 dependency functionality that is described below.
 
+The automation directory and STDCI configuration file
+------------------------------------------------------
+
+By default, STDCI searches configurations and scripts to execute for each
+stage under a directory named `automation/`. This directory needs to be located
+in the root of your project.
+If you want to overwrite the default path for different scripts, you can do so
+by specifying your requirements in STDCI configuration file. For detailed
+overview and examples of STDCI configuration file, please refer to
+[STDCI Configuration][7] page.
+
+### STDCI configuration file
+
+In order to build or test a project, the CI system requires some extra
+information. This information includes:
+
+1. Which processing architectures (E.g. `x86_64` or `ppc64le`) does the project
+   need to be built and tested on.
+2. Which Linux distribution versions does the project need to be tested on.
+3. Which branches of the project source code are meant to be released as part of
+   oVirt and which version of oVirt does each branch target.
+
+To specify this information, a [STDCI YAML configuration file][7] needs to be
+placed in the project's root directory with content that resembles the
+following example:
+
+    archs: x86_64
+    distros:
+      - fc25
+      - fc26
+      - el7
+    release_branches:
+      master: ovirt-master
+      ovirt-ansible-1.0: ovirt-4.1
+
+There are several options for the file name. They include:
+
+    stdci.yaml, automation.yaml, seaci.yaml, ovirtci.yaml
+
+All options can be prefixed with `.` as well as the file suffix can be `.yml`.
+STDCI will first search non-hidden files with the order specified above (left
+to right), and with the `.yaml` suffix before `.yml`, then will search for
+hidden files in the same order.
+
+The file can contain the following parameters:
+
+* **stages** - Stages allows you to specify which STDCI stages you want to
+  configure for your project. See `Standard CI 'Stages'` for more
+  info. If the parameter is not specified, STDCI will look for execution scripts
+  matching the default specification.
+  See `Attaching functionality to stages` for more info.
+* **substages** - Substages allows you to specify several parallel tasks for a
+  single event. The tasks you specify in substages will be executed on different
+  nodes.
+* **archs** - The architectures on which to run tests and builds for the project
+  (E.g. `x86_64` or `ppc64le`). Multiple values an be given as a list. A single
+  value can also be specified as a plain string. If the parameter is not
+  specified the project will be built and tested on `x86_64`.
+* **distros** - The Linux distributions on which to run tests and builds for the
+  project. The following values are currently supported:
+
+    * `el6` - For 'CentOS 6'
+    * `el7` - For 'CentOS 7'
+    * `fc26` - For 'Fedora 26'
+    * `fc27` - For 'Fedora 27'
+    * `fcraw` - For 'Fedora rawhide'
+
+    Multiple values can be given as a list. A single value can also be specified
+    as a plain string. If the parameter is not specified, the project will be
+    built and tested on 'CentOS 7'.
+
+* **release_branches** - A mapping between project branches that should be built
+  and released with oVirt, and the oVirt versions they will be released with.
+  An oVirt versions is specified as the name of the change queue that tests and
+  prepares that version (E.g. `ovirt-master` or `ovirt-4.1`). A list of change
+  queues can be given for a single branch, in that case, changes merged to it
+  will be submitted to all specified change queues in parallel.
+* **script** - The script section allows you to specify a custom script to run.
+  If not specified, STDCI will search for default script name that matches your
+  stage: `{ stage }.sh.{ distro }`.
+  Note that if you specify a custom script name, the other complementary
+  configurations should be follow this name (.repos, .package, ...).
+  Refer to `Attaching functionality to stages` in this doc for more info.
+
+All parameters in the file as well as the whole file itself are optional. If not
+specified, projects will be tested on 'CentOS 7' on 'x86_64' by default (As long
+as any standard stage scripts are included), and no release branches will be
+configured.
+
+For a detailed overview with examples, please refer to
+[STDCI Configuration][7] doc.
+
+[7]: STDCI-Configuration.markdown
+
+
 Attaching functionality to stages
 ---------------------------------
-
-In order to specify what needs to be done in a given stage one needs to simply
-drop a script file with the name of that stage and the `.sh` extension in the
+In order to specify what needs to be done in a given stage, one can either
+explicitly link a script file to a stage in the [STDCI YAML file][7] or add a
+script file with the name of that stage and the `.sh` extension in the default
 `automation` directory. For example, to specify what should be done when the
 *'check-patch'* stage is run, create the following file:
 
@@ -115,9 +202,9 @@ Runtime dependencies can be specified to make build tools and other resources
 available for the build and test scripts. The way to define those is described
 in the next chapter.
 
+
 Declaring build and test dependencies
 -------------------------------------
-
 In order to provide reliable and reproducible test and build results, test and
 build stage scripts are typically run inside isolated, minimal environments. It
 is often the case that more software packages and other data is needed in order
@@ -156,21 +243,21 @@ This standard currently defines and supports several kinds of dependencies:
 ### Dependency definition files
 
 Unless otherwise stated below, project dependencies are defined separately
-per-stage. And can additionally be defined separately per-distribution.
+per-script. And can additionally be defined separately per-distribution.
 
-Project dependencies are specified via files that are placed in the
-`automation` directory and take the following form:
+Project dependencies are specified via files that are placed in the same
+directory where the script is and take the following form:
 
-    automation/<stage-name>.<dependency-type>
+    <path-to-script>/<script-name>.<dependency-type>
 
-For example, to define package dependencies for the '*check-patch*' stage, you
-place them in the following file:
+For example, to define package dependencies for '*automation/check-patch.sh*'
+script, you place them in the following file:
 
     automation/check-patch.packages
 
-When specifying a per-distribution dependency, a distribution suffix needs to be
-added. For example, to define mounts for the '*check-merged*' stage when it runs
-on `el7`, use the following file:
+When specifying a per-distribution dependency, a distribution suffix needs to
+be added. For example, to define mounts for the '*automation/check-merged.sh*'
+script when it runs on `el7`, use the following file:
 
     automation/check-merged.mounts.el7
 
@@ -181,9 +268,10 @@ created. There are no inheritance or inclusion mechanisms between different
 dependency files, only one file is used to declare dependencies for a given
 stage run on a given distribution.
 
+
 ### Dependency caching
 
-System that are based on these build and test standards can utilize caching of
+Systems that are based on these build and test standards can utilize caching of
 the build and test environments to improve performance. Therefore there is no
 guarantee that the test environment will always contain the latest available
 versions of required software packages for example.
@@ -401,7 +489,6 @@ service, send an email to infra-support@ovirt.org with details of your project
 and the service you need access to. The CI team take care of the registration
 to the service and you will be able to access it through environment.yaml
 
-
 Collecting build and test results
 ---------------------------------
 
@@ -495,5 +582,5 @@ Gerrit, please refer to [Using oVirt Standard-CI with Gerrit][5].
 To learn how to setup use the oVirt CI system with projects hosted on GitHub,
 please refer to [Using oVirt Standard-CI with GitHub][6].
 
-[5]: Using_STDCI_with_Gerrit.markdown
-[6]: Using_STDCI_with_GitHub.markdown
+[5]: Using_STD-CI_with_Gerrit.markdown
+[6]: Using_STD-CI_with_GitHub.markdown
