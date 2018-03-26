@@ -78,21 +78,20 @@ after it is saved, enable and start the service to run permanently:
     systemctl enable openvpn@ovirt
     systemctl start openvpn@ovirt
 
-Alternatibely - import the config file via network manager to be able
-to connect via the applet when needed. In this case, certificates and
-keys need to be saved in a location, reachable by Network Manager.
+Alternatively - import the config file via network manager to be able
+to connect through the applet when needed. In this case, certificates and keys
+need to be saved in a location reachable by Network Manager.
 
 Delete a user
 =============
 
-To ensuer an existing user cannot connect, the certifiace needs to be revoked by the CA.
+To ensure an existing user cannot connect, the certifiate needs to be revoked by the CA.
 For that, go into the CA directory as described in the user creation step and run:
 
-    # ./easyrsa revoke testuser
+    ./easyrsa revoke testuser
 
-After performing revocation, generate a new CRL file and copy it to the OpenVPN directory:
+After performing revocation, generate a new CRL file so that OpenVPN knows about the change:
 
-    # ./easyrsa gen-crl
-    # cp /etc/openvpn/ssl/ca/pki/crl.pem  /etc/openvpn/ssl/crl.pem
+    ./easyrsa gen-crl
 
 OpenVPN re-reads this file each time a client connects to it, so no restart is necessary.
