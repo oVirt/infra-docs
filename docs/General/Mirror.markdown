@@ -27,13 +27,13 @@ admin to test it by running the following command:
 resources.ovirt.org:/var/log/mirrors
 
 After a few days that everything is running well do the following:
-* Create a new patch which updates the mirrorlist file, see
-[this][mirror_list_patch] for reference.
-* Update [http://www.ovirt.org/Repository_mirrors][wiki_repo] with the links/email/organization.
-* Email oVirt community lead in order to update [http://www.ovirt.org/Download][ovirt_download]
 
-    [ssh_key_patch]: https://gerrit.ovirt.org/#/c/51101/
-    [mirror_list_patch]: https://gerrit.ovirt.org/#/c/52384/
-    [infra_puppet]: https://gerrit.ovirt.org/#/admin/projects/infra-puppet
-    [wiki_repo]: http://www.ovirt.org/index.php?title=Repository_mirrors&action=edit&section=4s
-    [ovirt_download]: http://www.ovirt.org/Download
+* Create a new patch which updates the mirrorlist file, see [this][mirror_list_patch] for reference.
+* Update the [repository mirrors page][web_repo] with the links/email/organization.
+* Email oVirt community lead in order to update [the Downloads page][ovirt_download]
+
+[ssh_key_patch]: https://gerrit.ovirt.org/51101/
+[mirror_list_patch]: https://gerrit.ovirt.org/52384/
+[infra_puppet]: https://gerrit.ovirt.org/#/admin/projects/infra-puppet
+[web_repo]: https://www.ovirt.org/develop/infra/repository-mirrors/
+[ovirt_download]: https://www.ovirt.org/download/
