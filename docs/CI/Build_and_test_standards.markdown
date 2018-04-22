@@ -528,7 +528,7 @@ a list of files the oVirt CI system treats in a special way:
 
 ### Collecting container images
 
-While container images can be store as plain files, it is typically not very
+While container images can be stored as plain files, it is typically not very
 efficient to do so, instead, containers are typically stored in a deddicated
 container storage.
 
