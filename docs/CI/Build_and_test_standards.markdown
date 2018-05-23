@@ -582,5 +582,5 @@ Gerrit, please refer to [Using oVirt Standard-CI with Gerrit][5].
 To learn how to setup use the oVirt CI system with projects hosted on GitHub,
 please refer to [Using oVirt Standard-CI with GitHub][6].
 
-[5]: Using_STD-CI_with_Gerrit.markdown
-[6]: Using_STD-CI_with_GitHub.markdown
+[5]: Using_STDCI_with_Gerrit.markdown
+[6]: Using_STDCI_with_GitHub.markdown
