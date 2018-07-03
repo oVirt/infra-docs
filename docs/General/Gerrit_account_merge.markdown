@@ -147,5 +147,5 @@ Now deactivate the unused account ID with the following command:
 Since the user ID and account details are cached, we need to flush the Gerrit
 server cache with the following command:
 
-    ssh gerrit.ovirt.org -p 29418 gerrit flust-caches --all
+    ssh gerrit.ovirt.org -p 29418 gerrit flush-caches --all
 
