@@ -21,6 +21,11 @@ Welcome to oVirt Infra docs's documentation!
 * [Storage hosts](Phoenix_Lab/Storage_Hosts.markdown)
 * [Jenkins VM](Phoenix_Lab/Jenkins.markdown)
 
+## Community Cage
+* [Overview](Community_Cage/Overview.markdown)
+* [Hosts](Community_Cage/Hosts.markdown)
+* [Website Building](Community_Cage/Website_Building.markdown)
+
 ## Other Equipment
 * [s390x (Mainframe) slave VM](Other/s390x_slave_VM.markdown)
 
