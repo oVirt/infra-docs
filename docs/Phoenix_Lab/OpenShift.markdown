@@ -13,10 +13,10 @@ and a load balancer handling both API/UI and application traffic.
 API endpoints
 -------------
 
-| Instance   | API endpoint                             | First master | Note |
-| ---------- | ---------------------------------------- | ------------ | ---- |
-| Production | [https://shift.ovirt.org:8443](https://shift.ovirt.org:8443) | staging-shift-master01.phx.ovirt.org | |
-| Staging    | [https://staging-shift.phx.ovirt.org:8443](https://staging-shift.phx.ovirt.org:8443) | shift-m01.phx.ovirt.org | API reachable via [OpenVPN](OpenVPN.markdown) only |
+| Instance   | API endpoint                                                                         | First master                         | Note |
+| ---------- | ------------------------------------------------------------------------------------ | ------------------------------------ | ---- |
+| Production | [https://shift.ovirt.org:8443](https://shift.ovirt.org:8443)                         | shift-m01.phx.ovirt.org              | |
+| Staging    | [https://staging-shift.phx.ovirt.org:8443](https://staging-shift.phx.ovirt.org:8443) | staging-shift-master01.phx.ovirt.org | API reachable via [OpenVPN](OpenVPN.markdown) only |
 
 Remote access using oc
 ----------------------
