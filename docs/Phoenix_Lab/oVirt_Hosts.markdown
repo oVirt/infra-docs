@@ -1,58 +1,138 @@
 oVirt Hosts
-=============
+===========
 
-All the hosts have a server installation of Fedora 19, with a hardware
+All oVirt hosts in PHX have CentOS 7 installed with a hardware
 RAID5 setup and bonding on all interfaces.
 
-The hosts are separated in two groups, one that hosts the [hosted
-engine] and all the others. Right now we also have one of the hosts
-reserved (ovirt-srv08.ovirt.org) for the new integration testing
-framework.
+Hosts are split across datacenters. There is one that hosts the [hosted engine]
+and production VMs while others host CI workloads.
 
   [hosted engine]: /Hosted_Engine_Howto
 
+
+PHX oVirt datacenter organization
+---------------------------------
+
+There are several datacenters defined: Production for critical VMs
+that uses shared storage and local datacenters to host CI workloads.
+
+The Production datacenter consists of three hosts which are located
+in the DMZ VLAN and have static IPs defined:
+
+| Host        | IP           |
+| ----------- | ------------ |
+| ovirt-srv01 | 66.187.230.3 |
+| ovirt-srv02 | 66.187.230.4 |
+| ovirt-srv03 | 66.187.230.5 |
+
+These hosts are connected to the [Storage array](Storage_Hosts)
+
+Other datacenters are of the Local Storage type so there is
+one host per datacenter. These reside in the infra VLAN with
+IPs also assigned statically according to the hostname:
+
+| Host        | IP           |
+| ----------- | ------------ |
+| ovirt-srv09 | 172.19.11.9  |
+| ovirt-srv10 | 172.19.11.10 |
+| ovirt-srv11 | 172.19.11.11 |
+| ovirt-srv12 | 172.19.11.12 |
+| ovirt-srv13 | 172.19.11.13 |
+| ovirt-srv14 | 172.19.11.14 |
+
+There is also two POWER8 hosts in use by oVirt hosting ppc64le VMs:
+
+| Host        | FQDN                      |
+| ----------- | ------------------------- |
+| ovirt-srv15 | ovirt-srv15.phx.ovirt.org |
+| ovirt-srv16 | ovirt-srv16.phx.ovirt.org |
+
+See the [network layout](Networking) for more details about PHX VLANs.
+
+
+### Production VMs ###
+VMs in this datacenter can be installed through Foreman or using
+templates imported from Glance.
+
+Some of the vms that are located in the Production datacenter:
+
+* foreman: Foreman master
+* foreman-phx: Foreman proxy serving the phoenix network, includes
+  DHCP, TFTP and DNS services. Also serves (or will) as DNS for the
+  network.
+* HostedEngine: VM with the hosted engine, is not actually managed by
+  itself but by the hosted engine services.
+* resources02-phx-ovirt-org: Frontend to serve repositories in
+  resources.ovirt.org. It's connected to a special shared disk where
+  the repos are stored, so it's easy to plug-unplug it from the vm if
+  need upgrading or anything.
+* proxy-phx-ovirt-org: This will be the local network squid proxy
+  used to conserve traffic and increase speed when building with mock.
+* gw02.phx.ovirt.org: PHX gateway for routing internal VLANs
+
+
+### Jenkins VMs ###
+The jenkins local DCs have all the slaves and templates used to build
+them. The amount and oses/distros varies often but the organization
+should be quite stable.
+
+The slaves are named following the pattern:
+
+    vm${NUMBER}
+
+The number is used only to distinguish between the vms from one another
+so it's only requirement is to be unique.
+
+Currently the number ranges are used as follows:
+
+| first VM | last VM | distro |
+| -------- | ------- | ------ |
+| vm0001   | vm0049  | el7    |
+| vm0050   | vm0063  | fedora |
+| vm0064   | vm0099  | el7    |
+| vm0100   | vm0199  | fedora |
+| vm0200   | vm0299  | el7    |
+
+These are located in the workers VLAN and have IPs assigned via DHCP
+based on the MAC address used during VM creation. Some examples:
+
+| VM     | MAC               | IP            |
+| ------ | ----------------- | ------------- |
+| vm0001 | 00:16:3e:11:00:01 | 172.19.12.1   |
+| vm0100 | 00:16:3e:11:01:00 | 172.19.12.100 |
+| vm0222 | 00:16:3e:11:02:22 | 172.19.12.222 |
+| vm1001 | 00:16:3e:11:10:01 | 172.19.15.233 |
+
+The workers VLAN has a /22 subnet assigned so it can contain up to 1024 hosts.
+IPs in this subnet are internal and are not reachable from the outside.
+
+The templates are named the same way the slaves are, but instead of
+using the `vm${NUMBER}` suffix you only have two suffixes, `-base` and
+`-worker`. The `-base` template (sometimes you'll see also a vm
+with that name, used to update the template) is a template you can use
+to build any server, it has only the base foreman hostgroup
+applied. The `-worker` template has the cloud-init config defined to
+install software to act as a Jenkins slave.
+
+Also keep in mind that puppet may be run again by the foreman
+finisher script when creating a new machine to make sure to apply the
+latest puppet manifests and configurations.
+
+
 Network configuration
---------------
+---------------------
 
-Due to an restriction of the bonding drivers on Fedora 19, the network
-bond interfaces has to be bond1 instead of bond0, so the relevant
-networking configuration files end up as:
+All interfaces are bonded and the first one has PXE enabled.
+If a rebuild is needed, use the first interface and then bond
+using this "custom" bondiing mode in the oVirt Admin Interface.
 
+    "mode=4 miimon=100 lacp_rate=1"
 
-    [root@ovirt-srv01 ~]# cat /etc/sysconfig/network
-    HOSTNAME=ovirt-srv01
-    GATEWAY=66.187.230.126
-    [root@ovirt-srv01 ~]# cat /etc/sysconfig/network-scripts/ifcfg-em1
-    # Generated by VDSM version 4.14.9-0.fc19
-    DEVICE=em1
-    ONBOOT=yes
-    HWADDR=f8:bc:12:3b:4e:08
-    NM_CONTROLLED=no
-    SLAVE=yes
-    MASTER=bond1
-    USERCTL=no
-
-
-    [root@ovirt-srv01 ~]# cat /etc/sysconfig/network-scripts/ifcfg-bond1
-    DEVICE=bond1
-    ONBOOT=yes
-    BRIDGE=ovirtmgmt
-    NM_CONTROLLED=no
-    STP=no
-    HOTPLUG=no
-    BONDING_OPTS="mode=4 miimon=100 lacp_rate=1"
-
-Note the special *BONDING_OPTS*, that sets the type of bonding and
-rate to the same configured in the switch.
-
-
-The current network range that we are using is 66.187.230.0/25, with the
-gateway at 60.187.230.126. All the ips are public but there's a transparent
-firewall that blocks any incoming request.
+This will ensure the keepalive rate matches that on the switch.
 
 
 Hosted engine management
------------------------
+------------------------
 
 The three first hosts (when writing this), `ovirt-srv01`,
 `ovirt-srv02` and `ovirt-srv03` are the ones that manage the hosted
@@ -131,67 +211,6 @@ can set one host into maintenance mode executing:
 
 From the selected host. You can also handle the vm engine with
 hoset-endine command (**don't do it through the engine ui**).
-
-
-oVirt datacenter organization
--------------------------
-
-All the hosts are distributed across two datacenters, jenkins and
-production (Default in the ui), the first one is ment to host all the
-jenkins related vms and any testing vm outside jenkins. The production
-one is configured for high availability and is ment to host all the
-service vms that host production services like foreman, jenkins or
-resources01.
-
-### Production VMs ###
-There are no templates yet in this datacenter but some base netinstall
-images are uploaded, so if you have to create a new vm you'd be able
-to do so using the netinstall boot from foreman.
-
-Currently these are the vms that we have in the production datacenter:
-
-* foreman-phx: Foreman proxy serving the phoenix network, includes
-  DHCP, TFTP and DNS services. Also serves (or will) as DNS for the
-  network.
-* HostedEngine: VM with the hosted engine, is not actually managed by
-  itself but by the hosted engine services.
-* resources01-phx-ovirt-org: Frontend to serve the old repositories in
-  resources.ovirt.org. It's connected to a special shared disk where
-  the repos are stored, so it's easy to plug-unplug it from the vm if
-  need upgrading or anything.
-* proxy-phx-ovirt-org: This will be the local network squid proxy, is
-  not yet functional but the idea is to use it to cache mostly yum
-  packages, as we use intensive use of those when building with mock.
-
-
-### Jenkins VMs ###
-The jenkins DC has all the slaves and templates used to build
-them. The amount and oses/distros varies often but the organization
-should be quite stable.
-
-The slaves are named following the pattern:
-
-    ${DISTRO}${VERSION}-vm${NUMBER}-phx-ovirt-org
-
-That way is fairly easy to know the relevant information about the
-slave just by it's name. The number is used only to distinguish
-between the vms from the same distro/version, so it's only requirement
-is to be unique, though we usually try to use the lowest available
-number (that might change in the future when we automate the slave
-creation, thatn might be replace with the build name or just a hash).
-
-
-The templates are named the same way the slaves are, but instead of
-using the `vm${NUMBER}` suffix you only have two suffixes, `-base` and
-`-jenkins-slave`. The `-base` template (sometimes you'll see also a vm
-with that name, used to update the template) is a template you can use
-to build any server, it has only the base foreman hostgroup
-applied. The `-jenkins-slave` template has applied the jenkins-slave
-hostgroup.
-
-Also keep in mind that puppet will be run again by the foreman
-finisher script when creating a new machine to make sure to apply the
-latest puppet manifests and configurations.
 
 
 Tips and Tricks
