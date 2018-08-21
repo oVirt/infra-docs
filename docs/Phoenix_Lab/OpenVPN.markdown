@@ -42,7 +42,11 @@ Also, the CA certificate is needed by the client, it is located here:
 OpenVPN config template
 =======================
 
-The above data can be inserted into this template and saved as /etc/openvpn/ovirt.conf on the client
+Ensure the client system has OpenVPN installed, it is provided
+by the "openvpn" package on all major distibutions.
+
+The above data can be inserted into this template and
+saved as /etc/openvpn/client/ovirt.conf on the client system.
 
 
     client
@@ -75,8 +79,8 @@ The above data can be inserted into this template and saved as /etc/openvpn/ovir
 
 after it is saved, enable and start the service to run permanently:
 
-    systemctl enable openvpn@ovirt
-    systemctl start openvpn@ovirt
+    systemctl enable openvpn-client@ovirt
+    systemctl start openvpn-client@ovirt
 
 Alternatively - import the config file via network manager to be able
 to connect through the applet when needed. In this case, certificates and keys
