@@ -1,19 +1,17 @@
 Overview
-==============
+========
 
-The Poenix Lab infrastructure is composed by (as of today) 10 nodes
-separated in two roles. The [storage servers] \(2 hosts) and the
- [oVirt host] servers (8 hosts).
+The Phoenix Lab infrastructure is composed of 28 physical servers
+that are split into three groups:
 
-  [storage servers]: /infra/Phoenix_Lab_Storage_Hosts
-  [oVirt host]: /infra/Phoenix_Lab_oVirt_Hosts
+* [Storage hosts](Storage_Hosts.markdown) (2 servers)
+* [oVirt hosts](oVirt_Hosts.markdown) (11 servers)
+* Lago hosts (15 servers)
 
-The access to the servers is restricted to the foreman and jenkins
-hosts. So you need to access them first and tunnel through to be able
-to access any of the machines.
+Most of the production workloads for the project are running on this infra,
+primarily as VMs inside oVirt.
 
-When connecting to the VMs through spice you'll need some special
-setup so your connections are tunneled trough ssh, the details are
-[here][ssh_spice_tunnel]
-
-  [ssh_spice_tunnel]: /Infra/Phoenix_Lab_Ssh_Spice_Tunnel
+All servers have CentOS 7 installed on them and are managed by Foreman.
+Even though the lab has [public IP ranges](Networking.markdown) to provide
+services, outside SSH access is restricted.
+To perform management tasks please obtain OpenVPN(OpenVPN.markdown) access.
