@@ -67,7 +67,7 @@ In rare cases when a user needs to have instance-wide admin access, add the clus
 
     oadm policy add-cluster-role-to-user cluster-admin newadmin@test.com
 
-For more info, check out the official docs on [user](https://docs.openshift.com/container-platform/3.6/admin_guide/manage_users.html) and [role](https://docs.openshift.com/container-platform/3.6/admin_solutions/user_role_mgmt.html) management.
+For more info, check out the official docs on [user](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_users.html) and [role](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_rbac.html#managing-role-bindings) management.
 
 Managing persistent storage
 ===========================
@@ -80,7 +80,7 @@ To view existing volumes and their states, run:
 The "STATUS" column equals to "Bound" for volumes used by pods.
 
 To add a new volume - create a new YAML listing the name, size and NFS path to use.
-More info is provided in [official docs](https://docs.openshift.com/container-platform/3.6/install_config/persistent_storage/persistent_storage_nfs.html).
+More info is provided in [official docs](https://docs.openshift.com/container-platform/3.9/install_config/persistent_storage/persistent_storage_nfs.html).
 
 A sample persistent volume definition is presented below:
 
@@ -101,7 +101,26 @@ A sample persistent volume definition is presented below:
 Upgrading an instance
 =====================
 
-At the moment of this writing, the ansible hosts file and playbooks are stored on the first Master.
-The playbooks are stored in /root/openshift-ansible and to update them run a "git pull" in this dir.
+The ansible hosts file and playbooks are stored on the first Master.
+Playbooks are stored in /root/openshift-ansible and to update them run a "git pull" in this dir.
 
-To perform maintenance tasks please follow the [official docs](https://docs.openshift.com/container-platform/3.6/install_config/install/advanced_install.html), testing them on Staging first.
+To perform maintenance tasks please follow the [official docs](https://docs.openshift.com/container-platform/3.9/install_config/install/advanced_install.html), testing them on Staging first.
+
+Adding a node
+=============
+
+To add a new node to the environment, first set it up, configure docker storage
+and ensure the master can connect to it via SSH as that is needed by ansible.
+
+Connect to the first master and update the Ansible hosts file /etc/ansible/hosts
+Add the node that needs to be added into the [new_nodes] section.
+
+Now run the node scale-up playbook:
+
+    ansible-playbook /root/openshift-ansible/playbooks/openshift-node/scaleup.yml
+
+Ensure the playbook completes without errors. Verify the node is added to the cluster:
+
+    oc get nodes
+
+If the node is present in the list and its status is "Ready", the process is complete.
