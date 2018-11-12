@@ -32,8 +32,41 @@ After a few days that everything is running well do the following:
 * Update the [repository mirrors page][web_repo] with the links/email/organization.
 * Email oVirt community lead in order to update [the Downloads page][ovirt_download]
 
+Mirror monitoring
+=================
+
+Once the mirror is included into the mirrorlist its content
+needs to be monitored to ensure it serves the latest package versions.
+This is done using a pod in [OpenShift][openshift] that periodically updates
+timestamp files on resources.ovirt.org and verifies their age on mirrors.
+
+The list of mirrors to verify is defined in the [ovirt-mirrorchecker] repo.
+Submit a patch to this repository and merge it, then log in to [OpenShift][openshift]
+and trigger a new build of the ovirt-mirrorchecker image:
+
+    oc start-build ovirt-mirrorchecker -n ovirt-mirrorchecker
+
+This will build a new container image and deploy it.
+The new mirror should be present in the output of the mirror checker:
+
+    https://web-ovirt-mirrorchecker.apps.ovirt.org/mirrors
+
+Once this works, set up monitoring.ovirt.org to check the mirror along with the others.
+The following nagios configuration file contains the mirror monitor:
+
+    /etc/nagios/conf.d/hosts/web-ovirt-mirrorchecker.apps.phx.ovirt.org.cfg
+
+
+If a mirror gets out of sync, report this in the infra list and CC the contact person
+asking them to verify the reason and fix the sync issue.
+
+In case the issue persists for more than a week and there is no fix, remove the mirror
+from the mirrorlist to ensure users do not get outdated content (see previous section).
+
 [ssh_key_patch]: https://gerrit.ovirt.org/51101/
 [mirror_list_patch]: https://gerrit.ovirt.org/52384/
 [infra_puppet]: https://gerrit.ovirt.org/#/admin/projects/infra-puppet
 [web_repo]: https://www.ovirt.org/develop/infra/repository-mirrors/
 [ovirt_download]: https://www.ovirt.org/download/
+[ovirt-mirrorchecker]: https://gerrit.ovirt.org/#/admin/projects/ovirt-mirrorchecker
+[openshift]: Phoenix_Lab/OpenShift
