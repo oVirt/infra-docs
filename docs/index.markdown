@@ -11,6 +11,9 @@ Welcome to oVirt Infra docs's documentation!
 * [Merging Gerrit accounts](General/Gerrit_account_merge.markdown)
 * [Encrypting/decrypting with you own PGP key](General/PGP_howto.markdown)
 
+## Monitoring
+* [Monitoring/checking liveness for ovirt yum mirrors](Monitoring/Mirror_checker.markdown)
+
 ## Phoenix lab
 * [Overview](Phoenix_Lab/Overview.markdown)
 * [Networking](Phoenix_Lab/Networking.markdown)
