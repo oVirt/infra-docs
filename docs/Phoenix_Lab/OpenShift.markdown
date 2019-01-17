@@ -124,3 +124,44 @@ Ensure the playbook completes without errors. Verify the node is added to the cl
     oc get nodes
 
 If the node is present in the list and its status is "Ready", the process is complete.
+
+SSL
+===
+
+SSL is managed using [openshift-acme](https://github.com/tnozicka/openshift-acme) which is an automated ACME controller.
+
+Enabling opensift-acme on a route
+---------------------------------
+
+The controller will only act on routes that have it explicitly enabled
+to avoid abuse and certificate requests for non-existing domains.
+The following annotation needs to be added to a route definition:
+
+    metadata:
+      annotations:
+        kubernetes.io/tls-acme: "true"
+
+Alternatively, patch the route using the CLI:
+
+    oc patch route ROUTE_NAME -p '{"metadata":{"annotations":{"kubernetes.io/tls-acme":"true"}}}'
+
+This will instruct the controller to generate a new certificate and install it on the route.
+Upon expiration the controller will renew the certificate automatically.
+
+Deploying openshift-acme
+------------------------
+
+Standard upstream instructions can be used to deploy openshift-acme after a reinstall:
+
+    oc new-project acme
+    oc create -fhttps://raw.githubusercontent.com/tnozicka/openshift-acme/master/deploy/letsencrypt-live/cluster-wide/{clusterrole,serviceaccount,imagestream,deployment}.yaml -n acme
+    oc adm policy add-cluster-role-to-user openshift-acme -z openshift-acme -n acme
+
+The last step provides the service account required access permissions to read routes and change
+them by adding generated certificates.
+
+Troubleshooting certificate renewal
+-----------------------------------
+
+The controller runs as a pod in the "acme" namespace. In case of issues ensure
+that the pod is running and review its logs for further information.
