@@ -51,21 +51,21 @@ Single project access
 
 To provide access to an existing project, run the following command:
 
-    oadm policy add-role-to-user admin newuser@test.com -n NAME_OF_EXISTING_PROJECT
+    oc adm policy add-role-to-user admin newuser@test.com -n NAME_OF_EXISTING_PROJECT
 
 Project creation permission
 ---------------------------
 
 To allow the new user to create projects, add the self-provisioner role:
 
-    oadm policy add-cluster-role-to-user self-provisioner newuser@test.com
+    oc adm policy add-cluster-role-to-user self-provisioner newuser@test.com
 
 Cluster admin role
 ------------------
 
 In rare cases when a user needs to have instance-wide admin access, add the cluster-admin role:
 
-    oadm policy add-cluster-role-to-user cluster-admin newadmin@test.com
+    oc adm policy add-cluster-role-to-user cluster-admin newadmin@test.com
 
 For more info, check out the official docs on [user](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_users.html) and [role](https://docs.openshift.com/container-platform/3.9/admin_guide/manage_rbac.html#managing-role-bindings) management.
 
