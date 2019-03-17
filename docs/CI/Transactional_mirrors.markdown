@@ -156,3 +156,26 @@ Here is the process to effectively roll back a mirror to a previous snapshot:
    with dates for names.
 4. Run the "`system-mk_mirrors_index`" job to update the "`all_latest.*`" files
    with the new desired snapshot state.
+
+Using and updating mirrors for CI slaves
+-----------------------------------------
+All the Jenkins slaves that are connected to the Jenkins server are also using
+the transactional mirrors.
+This includes any VM (e.g vm0049.workers-phx.ovirt.org), phsyical (BM)
+(e.g ovirt-srv18.ovirt.org) or an OpenShift Pod.
+Every time a new job runs on Jenkins, the 'global_setup.sh' scripts disables
+all repos under /etc/yum.repos.d/ and uses the custom repos, defined in /etc/yum.conf,
+E.g:
+
+    [centos-base-el7]
+    name = CentOS-7 - Base
+    baseurl = http://mirrors.phx.ovirt.org/repos/yum/centos-base-el7/2016-12-13-13-30
+    gpgcheck = 1
+    gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+    proxy = _none_
+    skip_if_unavailable = true
+
+Currently, those YUM repos are updated manually on demand ( when a new CentOS version
+Is out or a failure is reported on CI ).
+The update is done via patch to relevant file in Jenkins repo under data/slave-repos/
+( e.g centos7.conf- https://gerrit.ovirt.org/#/c/98482 ).
