@@ -157,6 +157,63 @@ Here is the process to effectively roll back a mirror to a previous snapshot:
 4. Run the "`system-mk_mirrors_index`" job to update the "`all_latest.*`" files
    with the new desired snapshot state.
 
+Deleting old and unused mirrors
+-------------------------------
+To clear up space on the mirrors server and remove old mirrors please follow the
+following steps.
+
+### Step 1
+
+Ensure that the mirror is indeed not used any more. The mirrors can be used in
+many different places including:
+
+* OST reposync files
+* Slave repo configuration files
+* `automation/*.repos` files in project source repositories
+
+If you're not sure - you need to research it - talk with the developers and
+ensure this repo is really no longer used by anything in oVirt.
+
+If you delete the mirror while its being used by a job, that job is likelky to
+fail.
+
+### Step 2
+
+Delete the mirror's sync job by sending a patch to remove the mirror's name from
+the list of synced mirrors that can be found in the following file in the
+`jenkins` repo:
+
+    jobs/confs/projects/system/sync_mirrors.yaml
+
+You should wait for the patch to be reviewed and merged before proceeding with
+the steps here.
+
+### Step 3
+
+Delete the mirror's `latest.txt` file from the following path on the mirrors
+server (mirrors.phx.ovirt.org):
+
+    /var/www/html/repos/yum/$MIRROR_NAME/latest.txt
+
+Where `$MIRROR_NAME` is the name of the mirror to be removed.
+
+### Step 4
+
+Run the [`system-mk_mirrors_index-yum`][6] job to update the `all_latest` file
+and have the mirror be removed from it.
+
+From this point the mirror can no longer be seen by clients unless they use
+direct URLs to it.
+
+[6]: https://jenkins.ovirt.org/job/system-mk_mirrors_index-yum/
+
+### Step 5
+
+Delete the remaining mirror files from the mirrors server
+(mirrors.phx.ovirt.org). The files would be at:
+
+    /var/www/html/repos/yum/$MIRROR_NAME
+
 Using and updating mirrors for CI slaves
 -----------------------------------------
 All the Jenkins slaves that are connected to the Jenkins server are also using
