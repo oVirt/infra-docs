@@ -36,8 +36,12 @@ The following table specifies which trigger phrases can be used:
 Trigger phrase      | What it does
 --------------------|--------------------------------------------------------
 ci test please      | Run the '*check-patch*' stage
+ci check please     | Run the '*check-patch*' stage
 ci build please     | Run the '*build-artifacts*' stage
 ci add to whitelist | Add the PR submitter to the *contributors white list*
+
+**Note:** The 'please' keyword can actually be omitted or placed betwen 'ci' and
+the second keyword.
 
 The contributors white list
 ---------------------------
