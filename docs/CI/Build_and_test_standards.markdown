@@ -125,10 +125,10 @@ The file can contain the following parameters:
 * **distros** - The Linux distributions on which to run tests and builds for the
   project. The following values are currently supported:
 
-    * `el6` - For 'CentOS 6'
     * `el7` - For 'CentOS 7'
-    * `fc26` - For 'Fedora 26'
-    * `fc27` - For 'Fedora 27'
+    * `fc28` - For 'Fedora 28'
+    * `fc29` - For 'Fedora 29'
+    * `fc30` - For 'Fedora 30'
     * `fcraw` - For 'Fedora rawhide'
 
     Multiple values can be given as a list. A single value can also be specified
