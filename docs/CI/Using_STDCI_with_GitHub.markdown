@@ -143,10 +143,11 @@ Leave the 'Secret' field empty.
 
 Choose the 'Let me select individual events' option and check the following
 event check boxes:
+
 * Issue comments
 * Pull request
 
-Click on he green 'Add Webhook' button to add the webhook.
+Click on the green 'Add Webhook' button to add the webhook.
 
 ### Adding a GitHub hook for handling push events
 To configure the hook, go the project 'Settings' page, select

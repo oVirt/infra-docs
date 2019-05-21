@@ -9,7 +9,7 @@ Welcome to oVirt Infra docs's documentation!
 * [Puppet dev tips](General/Puppet.markdown)
 * [Creating Gerrit projects](General/Creating_Gerrit_Projects.markdown)
 * [Merging Gerrit accounts](General/Gerrit_account_merge.markdown)
-* [Encrypting/decrypting with you own PGP key](General/PGP_howto.markdown)
+* [Encrypting/decrypting with your own PGP key](General/PGP_howto.markdown)
 
 ## Monitoring
 * [Monitoring/checking liveness for ovirt yum mirrors](Monitoring/Mirror_checker.markdown)
@@ -44,4 +44,4 @@ Welcome to oVirt Infra docs's documentation!
 * [Proxy](CI/Proxy.markdown)
 * [System Groovy Jenkins Scripts](CI/System_groovy_jenkins_scripts.markdown)
 * [Gerrit custom hooks](CI/Gerrit_Hooks.markdown)
-* [Adding a yamlized jobs to Jenkins with JJB](CI/Adding_yamlized_jobs_with_JJB.markdown)
+* [Adding yamlized jobs to Jenkins with JJB](CI/Adding_yamlized_jobs_with_JJB.markdown)

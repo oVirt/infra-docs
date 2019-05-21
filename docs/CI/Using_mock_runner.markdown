@@ -144,7 +144,7 @@ If your project requires secrets as environment variables you will need to
 create a local **secrets file**.
 See [Writing STDCI secrets file documentation](Writing_STDCI_secrets_file.markdown)
 
-**How to tell that my project requires secrets as environment varialbes?**
+**How to tell that my project requires secrets as environment variables?**
 
 Open the corresponding `automation/${standard_stage_name}.environment.yaml`
 for the stage you want to execute locally via mock_runner. You will see a

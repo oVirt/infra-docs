@@ -56,11 +56,11 @@ after a patch is merged in Gerrit or commits are pushed to a branch in GitHub
 This stage is used for polling external data sources for information that is
 needed to perform automated source code updates. An example for such a polling
 process is when source code builds a container that is based on another
-container (With e.g. a 'FROM' in in a Dockerfile). The source code typically
+container (With e.g. a 'FROM' in a Dockerfile). The source code typically
 needs to specify a specific version of the base container so that builds are
 reproducible, but keeping that version up to date can be cumbersome for
 developers. The poll stage can be used to query for newer versions and
-automatically generate appropriate source code changes.  The CI system run this
+automatically generate appropriate source code changes. The CI system runs this
 stage periodically. This stage is also used in conjunction with the source code
 dependency functionality that is described below.
 
@@ -119,9 +119,9 @@ The file can contain the following parameters:
   single event. The tasks you specify in substages will be executed on different
   nodes.
 * **archs** - The architectures on which to run tests and builds for the project
-  (E.g. `x86_64` or `ppc64le`). Multiple values an be given as a list. A single
+  (E.g. `x86_64` or `ppc64le`). Multiple values can be given as a list. A single
   value can also be specified as a plain string. If the parameter is not
-  specified the project will be built and tested on `x86_64`.
+  specified, the project will be built and tested on `x86_64`.
 * **distros** - The Linux distributions on which to run tests and builds for the
   project. The following values are currently supported:
 
@@ -145,7 +145,7 @@ The file can contain the following parameters:
   If not specified, STDCI will search for default script name that matches your
   stage: `{ stage }.sh.{ distro }`.
   Note that if you specify a custom script name, the other complementary
-  configurations should be follow this name (.repos, .package, ...).
+  configurations should follow this name pattern (.repos, .package, ...).
   Refer to `Attaching functionality to stages` in this doc for more info.
 
 All parameters in the file as well as the whole file itself are optional. If not
@@ -170,11 +170,11 @@ script file with the name of that stage and the `.sh` extension in the default
     automation/check-patch.sh
 
 Despite the `.sh` extension, the script file could actually be written in any
-language as long as the right interpreter is specified in a ["shabeng"][1] line
+language as long as the right interpreter is specified in a ["shebang"][1] line
 at the beginning of the script.
 
 Since sometimes it is needed to do different things on different distributions,
-it is also possible to specify different scripts per distribution by added a
+it is also possible to specify different scripts per distribution by adding a
 distribution suffix to the script file name. For example, to have a different
 `check-merged` script for 'CentOS 7.x', another different script for 'Fedora 26'
 and a 3rd fall back script for all other distributions, create the following
@@ -185,14 +185,14 @@ three script files:
     automation/check-merged.sh
 
 The script files can also be symbolic links in case it is desired to place the
-actual script file in a different location or to have the same functionality to
+actual script file in a different location or to have the same functionality for
 a set of different distributions.
 
 [1]: https://en.wikipedia.org/wiki/Shebang_(Unix)
 
 ### Script runtime environment
 
-The scripts are run in an isolated, minimal environments. A clone of the project
+The scripts are run in isolated, minimal environments. A clone of the project
 source code is made available inside those environments and the current working
 directory for the script is set to the root of the project source code tree. The
 clone includes the project's Git history, so the `git` command can be used to
@@ -232,7 +232,7 @@ This standard currently defines and supports several kinds of dependencies:
   of the same project (Typically the test environment is destroyed when a build
   or a test is done), or to gain access to certain system devices or services.
 * *Environment dependencies* - A project can require environment variables to be
-  configured inside it's run-time environment.
+  configured inside its run-time environment.
   Environmnet variable values can be provided from multiple locations:
   - Plain: Used to configure variables with custom values.
   - Runtime environment: Used to provide environment variables from the
@@ -243,7 +243,7 @@ This standard currently defines and supports several kinds of dependencies:
 ### Dependency definition files
 
 Unless otherwise stated below, project dependencies are defined separately
-per-script. And can additionally be defined separately per-distribution.
+per script. And can additionally be defined separately per distribution.
 
 Project dependencies are specified via files that are placed in the same
 directory where the script is and take the following form:
@@ -277,11 +277,11 @@ guarantee that the test environment will always contain the latest available
 versions of required software packages for example.
 
 If there is a need to guarantee installation of the latest version of a certain
-component. It is recommended to have the stage scripts perform the installation
-directly instead via the dependency definition files.
+component, it is recommended to have the stage scripts perform the installation
+directly instead of via the dependency definition files.
 
 Doing it this way is almost guaranteed to have a performance impact on the oVirt
-CI system for example, so care must be taken to use this technique only where
+CI system, so care must be taken to use this technique only where
 absolutely needed.
 
 ### Defining extra source code dependencies (AKA "Upstream Sources")
@@ -569,7 +569,7 @@ stages][4].
 
 To have an automated CI system run build stages typically involves submitting
 the code changes to a central source code management (SCM) system such as Gerrit
-or GitHub and having the CI system pickup changes from there.
+or GitHub and having the CI system pick up changes from there.
 
 oVirt's CI system supports testing code for projects stored on oVirt's own
 Gerrit server or on GitHub under the oVirt project. There are currently

@@ -17,7 +17,7 @@ _.yml_ suffix instead of _.yaml_.
 STDCI provides a set of defaults that allows a project to specify only what is
 important for it and keep the configuration clean and easy to read. We will
 specify the default values and behaviours for every available configuration
-thorugh this doc.
+throughout this doc.
 
 
 ## The basics
@@ -191,7 +191,7 @@ In this example, STDCI will compute a build matrix of the following platforms:
 `(el6, x86_64), (el6, ppc64le), (el7, x86_64), (el7, ppc64le)`. For each
 combination, since script was not specified, STDCI will search for the default.
 
-Some may prefer to explicitly specify a script for a certein distro/arch:
+Some may prefer to explicitly specify a script for a certain distro/arch:
 
     ---
     distro:
@@ -255,7 +255,7 @@ value:
 
 In this example, since architecture was configured at a top level, it will
 apply on the _fc26_ and _fc27_ distributions, but it was overridden under
-the _el7_ configuraiton.
+the _el7_ configuration.
 
 
 ## Run a script on a particular event with STDCI stages
@@ -436,7 +436,7 @@ _"(fc27, x86_64)"_.
 By default, STDCI runs your build on one of the available hosts we have. This
 host can be a virtual machine or a bare-metal host. If one of your builds
 requires a bare-metal host (if you need virtualization capabilities for
-example). you can specify your requirements in the YAML file:
+example), you can specify your requirements in the YAML file:
 
     ---
     stage:
