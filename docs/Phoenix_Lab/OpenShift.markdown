@@ -109,8 +109,18 @@ To perform maintenance tasks please follow the [official docs](https://docs.open
 Adding a node
 =============
 
-To add a new node to the environment, first set it up, configure docker storage
-and ensure the master can connect to it via SSH as that is needed by ansible.
+To add a new node to the cluster, please check that the following preparations are made:
+
+* CentOS 7 installed and up-to-date
+* docker installed, overlay2 storage configured (default on CentOS7)
+* NetworkManager installed and enabled
+* firewalld installed and enabled
+* SELinux set to Enforcing mode
+* the first master's SSH pubkey is installed on the node
+* if the node is external, ensure it can connect back to the following services in PHX:
+   * apiserver endpoint: https://shift-int.phx.ovirt.org:8443
+   * SDN on infra nodes: VxLAN (UDP/4789) open for PHX public subnet 66.187.230.0/25
+   * if the node is used for kubevirt, ensure it has access to templates.ovirt.org/kubevirt
 
 Connect to the first master and update the Ansible hosts file /etc/ansible/hosts
 Add the node that needs to be added into the [new_nodes] section.
