@@ -126,7 +126,7 @@ From here, two steps must be taken. First, gerrit requires the existence of a
 file named `git-daemon-export-ok` in the project root in order to serve it
 over git://
 
-    touch git-export-daemon-ok
+    touch git-daemon-export-ok
 
 Enabling Custom Gerrit Hooks
 =============================
