@@ -46,3 +46,4 @@ Welcome to oVirt Infra docs's documentation!
 * [Gerrit custom hooks](CI/Gerrit_Hooks.markdown)
 * [Adding a yamlized jobs to Jenkins with JJB](CI/Adding_yamlized_jobs_with_JJB.markdown)
 * [Sending data to Prometheus](CI/Prometheus.markdown)
+* [Patch Gating](CI/Patch_Gating.markdown)

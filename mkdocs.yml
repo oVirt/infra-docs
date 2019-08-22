@@ -50,3 +50,4 @@ pages:
     - 'Gerrit custom hooks': 'CI/Gerrit_Hooks.markdown'
     - 'Adding a yamlized jobs to Jenkins with JJB': 'CI/Adding_yamlized_jobs_with_JJB.markdown'
     - 'Sending data to Prometheys': 'CI/Prometheus.markdown'
+    - 'Patch gating': 'CI/Patch_Gating.markdown'
