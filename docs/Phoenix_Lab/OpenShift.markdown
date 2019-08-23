@@ -18,11 +18,35 @@ API endpoints
 | Production | [https://shift.ovirt.org:8443](https://shift.ovirt.org:8443)                         | shift-m01.phx.ovirt.org              | |
 | Staging    | [https://staging-shift.phx.ovirt.org:8443](https://staging-shift.phx.ovirt.org:8443) | staging-shift-master01.phx.ovirt.org | API reachable via [OpenVPN](OpenVPN.markdown) only |
 
+Node hierarchy
+--------------
+
+Nodes are arranged using `region` and `zone` labels to split workloads:
+
+| region   | zone    | Workload                                                |
+| -------- | ------- | ------------------------------------------------------- |
+| infra    | default | infra pods needed for cluster operation (registry, etc) |
+| primary  | prod    | production pods with user apps                          |
+| primary  | logs    | logging infrastructure ()                               |
+| primary  | ci      | CI pods                                                 |
+| external | ci      | CI pods running on bare metals located outside of PHX   |
+
+The `ci` zone also contains a `type` label to better utilize node capacity:
+
+| type                | Description                                |
+| ------------------- | ------------------------------------------ |
+| vm                  | VM node for CI jobs that don't need nested |
+| bare-metal          | Bare metal node located in PHX             |
+| bare-metal-external | Bare metal node located outside of PHX     |
+
+Every new project it should contain a default node selector
+based on one of the above labels, at least the `zone` one.
+
 Remote access using oc
 ----------------------
 
 External authentication is used, so to log in remotely using
-the 'oc' console tool please first authenticate in the UI,
+the `oc` console tool please first authenticate in the UI,
 click on the username in the top right corner and select
 "Copy Login Command" - this will generate an authentication
 token and copy the complete login command into the clipboard.
@@ -34,6 +58,14 @@ To perform administrative tasks on the cluster, such as upgrades
 and permission modification, please log in as root to the first
 master node indicated in the table above. All changes should be
 tested on Staging first.
+
+Creating a project
+------------------
+
+To create a new project called `myprod` that will run on nodes
+in the `prod` zone, run the following command:
+
+    oc adm new-project myprod --node-selector='zone=prod'
 
 Adding a new user
 =================
@@ -56,14 +88,14 @@ To provide access to an existing project, run the following command:
 Project creation permission
 ---------------------------
 
-To allow the new user to create projects, add the self-provisioner role:
+To allow the new user to create projects, add the `self-provisioner` role:
 
     oc adm policy add-cluster-role-to-user self-provisioner newuser@test.com
 
 Cluster admin role
 ------------------
 
-In rare cases when a user needs to have instance-wide admin access, add the cluster-admin role:
+In rare cases when a user needs to have instance-wide admin access, add the `cluster-admin` role:
 
     oc adm policy add-cluster-role-to-user cluster-admin newadmin@test.com
 
@@ -77,7 +109,7 @@ To view existing volumes and their states, run:
 
     oc get pv
 
-The "STATUS" column equals to "Bound" for volumes used by pods.
+The `STATUS` column equals to "Bound" for volumes used by pods.
 
 To add a new volume - create a new YAML listing the name, size and NFS path to use.
 More info is provided in [official docs](https://docs.openshift.com/container-platform/3.9/install_config/persistent_storage/persistent_storage_nfs.html).
@@ -102,7 +134,7 @@ Upgrading an instance
 =====================
 
 The ansible hosts file and playbooks are stored on the first Master.
-Playbooks are stored in /root/openshift-ansible and to update them run a "git pull" in this dir.
+Playbooks are stored in /root/openshift-ansible and to update them run a `git pull` in this dir.
 
 To perform maintenance tasks please follow the [official docs](https://docs.openshift.com/container-platform/3.9/install_config/install/advanced_install.html), testing them on Staging first.
 
@@ -173,5 +205,5 @@ them by adding generated certificates.
 Troubleshooting certificate renewal
 -----------------------------------
 
-The controller runs as a pod in the "acme" namespace. In case of issues ensure
+The controller runs as a pod in the `acme` namespace. In case of issues ensure
 that the pod is running and review its logs for further information.
