@@ -9,7 +9,7 @@ Prerequisites
 =============
 
 * Admin access to the Gerrit web UI
-* SSH access to gerrt.ovirt.org:22, yielding a shell, and sudo access on that
+* SSH access to gerrit.ovirt.org:22, yielding a shell, and sudo access on that
   host
 * Be an owner of the oVirt Project on github to create repos to sync to
 

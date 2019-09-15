@@ -122,11 +122,11 @@ command).
 Uploading to a public pgp server
 ---------------------------------
 
-In onder to share with the world you new key, one way is to publish it on one
+In order to share with the world your new key, one way is to publish it on one
 of the pgp public servers, I'll use pgp.mit.edu, but you can use any other you
 like.
 
-Firs you'll have to get the key id of your key, it was shown on creation, but
+First you'll have to get the key id of your key, it was shown on creation, but
 if you don't remember:
 
     gpg --list-keys ni@knig.ht
