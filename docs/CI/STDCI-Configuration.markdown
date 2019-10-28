@@ -488,8 +488,8 @@ to run the conditions.
 
 ## Use Jinja2 templates for enhanced functionality
 
-STDCI allows the use of Jinja2 templates to avoid repetitive typing. For that
-purpose, STDCI exposes [Jinja2 variables][6] to be used in the YAML file. The
+STDCI allows the use of [Jinja2 templates][6] to avoid repetitive typing. For that
+purpose, STDCI exposes [Jinja2 variables][7] to be used in the YAML file. The
 available variables are: **{{ stage }}**, **{{ substage }}**, **{{ distro }}** and
 **{{ arch }}**. Depanding on where they are used in the file, they will
 evaluate to the corresponding _stage_, _substage_, _distro_ and _arch_.
@@ -530,4 +530,5 @@ reference for your project.
 [3]: https://github.com/oVirt/ovirt-system-tests/blob/master/stdci.yaml
 [4]: https://gerrit.ovirt.org/#/admin/projects/jenkins
 [5]: https://github.com/oVirt/jenkins/blob/master/stdci.yaml
-[6]: http://jinja.pocoo.org/docs/2.10/templates/#variables
+[6]: https://jinja.palletsprojects.com/
+[7]: https://jinja.palletsprojects.com/en/2.10.x/templates/#variables
