@@ -215,7 +215,18 @@ required software and tools, but this standard also specifies a way to declare
 requirements so that they can be provided automatically and efficiently while
 the environment for running the build or test script is being prepared.
 
-This standard currently defines and supports several kinds of dependencies:
+The standard currently supports two alternative ways to request dependencies:
+- Specifying dependencies via dependency definition files
+- Requesting container images that provide the needed dependencies
+
+To learn how to use container images, please refer to the [Standard-CI
+container-based backend documentation][8].
+
+The rest of this document concentrates on the use of dependency definition
+files.
+
+When using dependency definition files, several kinds of dependencies can be
+requested:
 
 * *Extra source code dependencies* - A project can specify that it needs to be
   tested or built along with the source code of another repository. This can be
@@ -239,6 +250,8 @@ This standard currently defines and supports several kinds of dependencies:
     outer environment (for example Jenkins variables such as $BUILD_ID)
   - Secrets and credentials: Used to provide auth tokens, ssh keys and etc as
     environment variables.
+
+[8]: STDCI-Containers.markdown
 
 ### Dependency definition files
 
