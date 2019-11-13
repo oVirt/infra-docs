@@ -21,10 +21,20 @@ the [STDCI YAML configuration file][2]. Following is an example for how to do
 so:
 
     sub-stages:
-      - centos7-container:
-          container:
-            - image: docker.io/centos:7
-              args: ['echo', 'Hollow world from container!']
+      - run-on-fc31-container:
+          containers:
+            # The centos7 image is used for pulling source code
+            - image: centos/s2i-base-centos7
+              args:
+              - bash
+              - -exc
+              - |
+                git init .
+                git fetch "$STD_CI_CLONE_URL" +refs/heads/*:refs/remotes/origin/*
+                git fetch "$STD_CI_CLONE_URL" +"$STD_CI_REFSPEC":myhead
+                git checkout myhead
+            # Actual tests run in an fc31 image
+            - image: docker.io/fedora:31
 
 As is typical for standard-CI YAML options, the option can be provided at the
 level of a *stage*, a *substage*, a *distro*, an *arch*, or a combination
@@ -34,10 +44,6 @@ option name.
 
 The contents of the `container` option is a list of container entries that can
 contain the fields specified below.
-
-**Note:** Currently only one container entry may be specified in the list. If more
-than one entry is specified, only the last entry would be used. Future
-extensions may make use of the other entries.
 
 As a convenience for the case where there is only one entry in the container
 list, the `container` option may also contain the container entry structure
@@ -55,9 +61,11 @@ workingdir | yes       | /workspace        | Set the working directory
 Please note, that the container fields are roughly equivalent to similar fields
 specified for a container configuration in Kubernetes.
 
-When specifying the `container` option, the STDCI system will launch the
-specified container providing the specified arguments, wait for it to finish and
-report whether it succeeded or failed.
+When specifying the `container` option the STDCI system will launch all the
+containers specified in the list one after another in the order they are
+specified. If any container returns a nonzero result, the execution will stop
+and an error will be reported. The containers will all run in the same host (Or
+POD in Kubernetes).
 
 **Note:** CI threads that use containers, may be defined in the same configuration
 file, alongside threads that used the legacy runtime.
@@ -94,19 +102,48 @@ required that the script file will exist. If the file does not exist then:
 
 Source code
 -----------
-The system does not currently include any built-in mechanisms to make the
-project source code available to the container. It is up to container image
-authors and users to make the image obtain the right source code.
+The system does not by default make the project source code available to the
+container. It is up to container image authors and users to make the image
+obtain the right source code.
 
-To assist with doing this, the CI system provides several environment variables
-to the container pointing at where the source code can be obtained from (See
-below).
+The system does have the built-in ability to clone the project source code into
+the `/workspace` directory prior to launching the user-specified containers.
+This is done via the `decorate-containers` option.
+
+The `decorate-containers` option
+--------------------------------
+The `decorate-containers` option is a stand-alone option that can be placed in
+the Standard-CI YAML configuration file similarly to the `containers` option.
+
+The options value is a boolean that defaults to `False`. When it is set to
+`True` it makes the system perform various bits of additional functionality when
+running containers.
+
+Currently the only functionality provided by the `decorate-containers` option is
+to clone the project source code into `/workspace` before running the requested
+containers.
+
+Following is an example for using the `decorate-containers` option:
+
+    sub-stages:
+      - run-on-fc31-container:
+          container: docker.io/fedora:31
+          decorate-container: True
+
+*Note*: In the example above, since only one container is specified and only the
+image option is set, the container configuration could be shorthanded to a
+single string. See the *'Tricks aliases, and shorthands'* section below for
+explanation about which shorthand syntaxes are available.
+
+For convenience, the `decorate-containers` option may be shorthanded to
+`decorate`.
 
 Working directory and `/workspace`
 ----------------------------------
 When the container is launched a temporary volume is mounted at `/workspace`.
-The directory is intended to be used as the main workspace for the container,
-and future services may use it as a place to exchange information.
+The directory is intended to be used as the main workspace for the container.
+When several containers are defined, they may use it as a place to exchange
+information.
 
 By default, the `/workspace` directory is set as the working directory for the
 container. This may be changed using the `workingdir` option.
@@ -161,9 +198,7 @@ several limitations, some of which may be mitigated via future extensions:
 1. Only the x86_64 architecture is currently supported
 2. The CI target distribution configuration is ignored
 3. The CI script must exist even if unused
-4. The project source code is not provided by the CI framework
-5. Only one container may be invoked for a given CI thread
-6. The CI system only reports success/failure status, there is no way to yield
+4. The CI system only reports success/failure status, there is no way to yield
    other build artifacts. The STDOUT and STDERR streams of the container will be
    shown, however, in the Job output in Jenkins
 
@@ -193,7 +228,8 @@ writing shorter and nicer YAML.
 6. The `command` and `args` options may be given as lists of strings or singular
    strings, that are then implicitly converted to lists with a single string
    member.
-7. The usual STDCI configuration file rules - for ignoring case, whitespace,
+7. The `decorate-containers` option may be shorthanded to `decorate`.
+8. The usual STDCI configuration file rules - for ignoring case, whitespace,
    dashes and underscores - apply. Together with some of the features mentioned
    above, this allows for a "literary" configuration style, like so:
 
