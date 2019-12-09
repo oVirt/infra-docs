@@ -207,22 +207,30 @@ Second we need to ssh directly into `gerrit.ovirt.org` as explained in the
 Third we need to update the replication.config file with our new project
 that should be replicated.
 
-	vi ~/review_site/etc/replication.config
+    vi ~/review_site/etc/replication.config
 
 Add your new project (foobar) under the `[remote github]` section.
 Each project should be on a separate line.
 In the next example only foobar project will be replicated.
 
-	projects = foobar
+    projects = foobar
 
 Regex can be used by adding ^ at the begging of the line
 In the next example foobar-prod and foobar-test projects will be replicated.
 
-	projects = ^foobar-(prod|test)
+    projects = ^foobar-(prod|test)
 
 You can check the replication_log file to see the status of your replication
 
-	tailf ~/review_site/logs/replication_log
+    tailf ~/review_site/logs/replication_log
+
+Force replication to Github
+===========================
+
+If replication is set up for an existing repo gerrit will not automatically
+replicate until the next patch is merged. To force a replication, run this:
+
+    ssh -p 29418 gerrit.ovirt.org replication start <repo-name>
 
 Populating the repository
 =========================
