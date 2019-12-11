@@ -116,12 +116,14 @@ The `decorate-containers` option is a stand-alone option that can be placed in
 the Standard-CI YAML configuration file similarly to the `containers` option.
 
 The options value is a boolean that defaults to `False`. When it is set to
-`True` it makes the system perform various bits of additional functionality when
-running containers.
+`True` it makes the system automatically perform the following additional
+functionality when running containers.
 
-Currently the only functionality provided by the `decorate-containers` option is
-to clone the project source code into `/workspace` before running the requested
-containers.
+1. The project source code is cloned into `/workspace` before running the
+   requested containers.
+2. A Shared volume is mounted on `/exported-artifacts`, and any files available
+   there when the build is done are collected and made available as build
+   artifacts.
 
 Following is an example for using the `decorate-containers` option:
 
@@ -147,6 +149,18 @@ information.
 
 By default, the `/workspace` directory is set as the working directory for the
 container. This may be changed using the `workingdir` option.
+
+Build artifact collection
+-------------------------
+As noted above, when the `decorate-containers` options is is set to `True`, an
+extra storage volume is mounted on the container at `/exported-arficats`. The
+build or test script running in the container may leave files there, and those
+files would be made available as part of the job results when the build is done.
+
+If files with the `*.xml` extension are placed in `/exported-artifacts`, those
+files would, in addition to being made available, would also be parsed as JUnit
+test result XML files, as data available in them would be made available in the
+Jenkins UI.
 
 Distribution and Architecture
 -----------------------------
@@ -198,9 +212,9 @@ several limitations, some of which may be mitigated via future extensions:
 1. Only the x86_64 architecture is currently supported
 2. The CI target distribution configuration is ignored
 3. The CI script must exist even if unused
-4. The CI system only reports success/failure status, there is no way to yield
-   other build artifacts. The STDOUT and STDERR streams of the container will be
-   shown, however, in the Job output in Jenkins
+4. Only the output of the last container in a given list of containers in shown
+   in the Jenkins console or Blue Ocean. It is currently impossible to see the
+   logs of other containers.
 
 Tricks aliases, and shorthands
 ------------------------------
