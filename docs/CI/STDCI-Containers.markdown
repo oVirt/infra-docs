@@ -150,8 +150,19 @@ information.
 By default, the `/workspace` directory is set as the working directory for the
 container. This may be changed using the `workingdir` option.
 
-Build artifact collection
--------------------------
+Build artifact and log collection
+---------------------------------
+After the CI containers are done running, any STDOUT or STDERR output they have
+generated is collected and stored in log files that are made available in the
+`pod_logs` directory as part of the job results.
+
+**Note:** When the CI system runs containers in a POD, the output of the main
+container, which is the last container in the configured list of containers, is
+shown in the Jenkins job output and in Blue Ocean. When more containers are
+configured, their output is not displayed due to an unfortunate limitation of
+the OpenShift version that is in use in the CI system. The output is available
+however, in the log files described above.
+
 As noted above, when the `decorate-containers` options is is set to `True`, an
 extra storage volume is mounted on the container at `/exported-arficats`. The
 build or test script running in the container may leave files there, and those
@@ -213,8 +224,8 @@ several limitations, some of which may be mitigated via future extensions:
 2. The CI target distribution configuration is ignored
 3. The CI script must exist even if unused
 4. Only the output of the last container in a given list of containers in shown
-   in the Jenkins console or Blue Ocean. It is currently impossible to see the
-   logs of other containers.
+   in the Jenkins console or Blue Ocean. It is possible to see the logs of other
+   containers via collected log files.
 
 Tricks aliases, and shorthands
 ------------------------------
