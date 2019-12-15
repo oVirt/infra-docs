@@ -57,6 +57,7 @@ image      | no        | N/A               | The container image to run
 args       | yes       | CI script name    | Arguments to pass to the image
 command    | yes       | Image entrypoint  | Override the image entry point
 workingdir | yes       | /workspace        | Set the working directory
+securityContxt | yes   | empty map         | Security settings for the container
 
 Please note, that the container fields are roughly equivalent to similar fields
 specified for a container configuration in Kubernetes.
@@ -214,6 +215,47 @@ JOB_NAME            | The full name of the running job in Jenkins
 JOB_BASE_NAME       | The short name of the running job in Jenkins
 JOB_URL             | The URL for the running job in Jenkins
 JENKINS_URL         | The URL for the Jenkins master the job is running on
+
+Running privileged containers and using `securityContext`
+---------------------------------------------------------
+By default, the CI system runs containers with a very limited set of privileges.
+The containers themselves are launched in unprivileged mode that forbids them
+from carrying out most system actions, and the test scripts that are launched
+within them are launched using an unprivileged user account with a randomly
+selected UID.
+
+Some container images require running certain processes with elevated
+privileges. For example, containers that use `systemd` to launch background
+processes within them require that `systemd` be launched as `root`. As another
+example, some tests may require launching VMs within containers, doing that
+requires that the container would be launched in privileged mode.
+
+To enable this kinds of use cases, the CI system allows for the use of the
+`securityContext` property, to override the lower privileges the system sets by
+default. To maintain system security, however, there are several limitations to
+the use of this property:
+
+1. The CI team maintains a white-list of approved privileged container images.
+   Using the `securityContext` property with images that are not listed, would
+   be blocked by the CI system.
+2. It is not allowed to specify the `command` option along with the
+   `securityContext` option. This prevents one from overriding an entry point
+   script in the container image that may drop privileges before launching test
+   scripts.
+
+The `securityContext` option itself is identical to the similar option that
+exists within K8s POD specifications, it is specified as a map that may contain
+the following fields:
+
+Field      | Type       | What it does
+---------- | ---------- | ------------------------------------------------------
+privileged | Boolean    | Specify wither to run the container in privileged mode
+runAsUser  | Int/String | Specify the user for processes in the container
+runAsGroup | Int/String | Specify the group for processes in the container
+fsGroup    | Int/String | (Not used by current system implementation)
+
+All fields of the `securityContext` option are optional, when not specified, the
+default system-wide unprivileged settings are used.
 
 Limitations
 -----------
