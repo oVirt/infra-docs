@@ -43,6 +43,7 @@ pages:
       - 'Using oVirt Standard-CI with GitHub': 'CI/Using_STDCI_with_GitHub.markdown'
     - 'STDCI Configuration': 'CI/STDCI-Configuration.markdown'
     - 'Standard-CI container-based backend': 'CI/STDCI-Containers.markdown'
+    - 'Standard-CI GPG-based secrets': 'CI/GPG_secrets.markdown'
     - 'The CI transactional mirrors':
       - 'Introduction': 'CI/Transactional_mirrors.markdown'
       - 'List of CI mirrors': 'CI/List_of_mirrors.markdown'

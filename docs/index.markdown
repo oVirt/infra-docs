@@ -38,6 +38,7 @@ Welcome to oVirt Infra documentation!
     * [Standard-CI container-based backend](CI/STDCI-Containers.markdown)
     * [Using mock_runner to run Standard-CI stages](CI/Using_mock_runner.markdown)
     * [Writing STDCI secrets file](CI/Writing_STDCI_secrets_file.markdown)
+    * [Using GPG-based secrets](CI/GPG_secrets.markdown)
     * [Using oVirt Standard-CI with Gerrit](CI/Using_STDCI_with_Gerrit.markdown)
     * [Using oVirt Standard-CI with GitHub](CI/Using_STDCI_with_GitHub.markdown)
 * [The CI transactional mirrors](CI/Transactional_mirrors.markdown)

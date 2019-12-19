@@ -125,6 +125,8 @@ functionality when running containers.
 2. A Shared volume is mounted on `/exported-artifacts`, and any files available
    there when the build is done are collected and made available as build
    artifacts.
+3. All GPG-encrypted files in the source code repository are decrypted (if
+   possible). See **Using secret data** below for details.
 
 Following is an example for using the `decorate-containers` option:
 
@@ -256,6 +258,23 @@ fsGroup    | Int/String | (Not used by current system implementation)
 
 All fields of the `securityContext` option are optional, when not specified, the
 default system-wide unprivileged settings are used.
+
+Using secret data
+-----------------
+Occasionally the CI system needs to carry out operations that requires access to
+secret data such as passwords, tokens or encryption keys.
+
+To make such data available to the system, it needs to be encrypted with the GPG
+tool using the CI system's public key, and placed in the project's Git
+repository, as described in the [Standard-CI GPG-based secrets][3] document.
+
+For decorated containers, the CI system would automatically find all the
+GPG-encrypted files included in the project source code and make unencrypted
+versions available. Care must be take when creating CI containers to avoid
+having scripts included in them accidentally output secret data to logs or as
+build artifacts.
+
+[3]: GPG_secrets.markdown
 
 Limitations
 -----------
