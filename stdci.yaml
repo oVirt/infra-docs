@@ -1,0 +1,2 @@
+release-branches:
+  'master': 'dummy-master'
