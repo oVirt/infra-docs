@@ -1,5 +1,5 @@
-Welcome to oVirt Infra docs's documentation!
-============================================
+Welcome to oVirt Infra documentation!
+=====================================
 
 ## General
 * [Communication](General/Communication.markdown)
