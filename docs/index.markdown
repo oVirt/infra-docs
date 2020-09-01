@@ -23,6 +23,7 @@ Welcome to oVirt Infra documentation!
 * [Configureing the ssh tunnel to get spice](Phoenix_Lab/Ssh_Spice_Tunnel.markdown)
 * [Storage hosts](Phoenix_Lab/Storage_Hosts.markdown)
 * [Jenkins VM](Phoenix_Lab/Jenkins.markdown)
+* [Templates server](Phoenix_Lab/Templates.markdown)
 
 ## Community Cage
 * [Overview](Community_Cage/Overview.markdown)
