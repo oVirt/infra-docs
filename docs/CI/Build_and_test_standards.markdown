@@ -354,6 +354,20 @@ Only one `upstream_sources.yaml` file can be specified per-project, therefore it
 is not possible to specify different source code dependencies for different
 stages or distributions.
 
+#### usrc hooks
+
+Hooks will be searched in the directory which contains the
+upstream-sources config. It's expected that the hooks will
+have execution permissions set.
+
+__usrc supports the following hooks__:
+
+`usrc-post-update-hook`
+
+Will run after `usrc` updates the upstream-sources config, and before creating a commit.
+
+The `USRC_CONFIG_PATH` will contain the path to the upstream-sources config.
+
 ### Package dependencies
 
 Package dependencies are specified in dependency definition files with the
