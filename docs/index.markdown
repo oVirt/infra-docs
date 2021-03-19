@@ -25,6 +25,10 @@ Welcome to oVirt Infra documentation!
 * [Jenkins VM](Phoenix_Lab/Jenkins.markdown)
 * [Templates server](Phoenix_Lab/Templates.markdown)
 
+## PSI OpenStack
+* [Overview](PSI_OpenStack/Overview.markdown)
+* [IPA](PSI_OpenStack/IPA.markdown)
+
 ## Community Cage
 * [Overview](Community_Cage/Overview.markdown)
 * [Hosts](Community_Cage/Hosts.markdown)
