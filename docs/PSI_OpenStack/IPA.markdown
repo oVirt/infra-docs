@@ -2,7 +2,7 @@ IPA
 ===
 
 The FreeIPA server is hosted on [PSI Openstack](Overview.markdown) and used to manage user access
-to infra servers. It is reachable фе https://ipa.ovirt.org
+to infra servers. It is reachable at https://ipa.ovirt.org
 
 Enrolling a system
 ------------------
@@ -43,6 +43,21 @@ Enabling 2FA
 To enable dual-factor auth for a user, select the "Two factor authentication (password + OTP)" option.
 The user will then be able to log in to IPA using just a password and register a 2FA token.
 Once the token is registered it needs to be used to log in and perform sudo actions
+
+Adding OTP Token
+------------
+
+To add OTP token:
+
+1. Login into IPA server
+2. Open "Profile"
+3. Select "Actions" -> "Add OTP Token"
+4. Change parameters of OTP Token if needed and hit "Add"
+
+Default parameters should work in most cases.
+
+To force usage of OTP token on a per-user basis, even if 2FA is not forced globally on IPA server,
+user can enable "Two factor authentication (password + OTP)" in his Profile
 
 Disabling a user
 ----------------
